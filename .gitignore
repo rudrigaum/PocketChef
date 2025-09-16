@@ -1,0 +1,119 @@
+# Created by https://www.toptal.com/developers/gitignore/api/swift,xcode
+# Edit at https://www.toptal.com/developers/gitignore?templates=swift,xcode
+
+### Swift ###
+# Standard Swift project files
+.build/
+Packages/
+*.xcodeproj
+xcuserdata/
+
+# Swift Package Manager
+#
+# Add this line if you want to avoid checking in source code from Swift Package Manager dependencies.
+# .build/checkouts
+#
+# Add this line if you want to avoid checking in resolved dependency versions.
+# Package.resolved
+
+### Xcode ###
+# Xcode
+#
+# gitignore contributors: remember to keep this file compatible with Xcode.
+#
+# Swift-specific
+.swiftpm/
+
+## User-specific
+*.xcuserdatad
+*.podspec.json
+*.xccheckout
+*.xcscmblueprint
+*.xcschememanagement.plist
+*.xpcproxy
+private/
+*.moved-aside
+DerivedData/
+Index/
+build/
+Build/
+*.hmap
+*.ipa
+*.app
+*.dSYM/
+*.app.dSYM.zip
+*.dsym
+*.framework
+*.profdata
+*.swiftdoc
+*.swiftmodule
+*.swiftpm
+*.swifttest
+*.testrun
+profile.dSYM
+*.xcarchive
+*.xcuserdata
+*.xcuserstate
+project.xcworkspace
+
+# CocoaPods
+#
+# We recommend against adding the Pods directory to your .gitignore. However
+# you should judge for yourself, the pros and cons are mentioned at:
+# https://guides.cocoapods.org/using/using-cocoapods.html#should-i-check-the-pods-directory-into-source-control
+#
+# Pods/
+#
+# Add this line if you want to avoid checking in source code from the Xcode workspace
+# *.xcworkspace
+
+# Carthage
+#
+# Add this line if you want to avoid checking in source code from Carthage dependencies.
+# Carthage/Checkouts
+
+Carthage/Build
+
+# fastlane
+#
+# It is recommended to not store the screenshots in the git repo. Instead, use fastlane to re-generate the
+# screenshots whenever they are needed.
+# For more information about the recommended setup visit:
+# https://docs.fastlane.tools/best-practices/source-control/
+
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/screenshots
+fastlane/test_output
+
+# Secrets - Good practice for the future
+# We will create a file for our API Key later and we don't want to commit it.
+APIKeys.plist
+
+# macOS
+#
+# General
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Thumbnails
+._*
+
+# Files that might appear in the root of a volume
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+
+# Directories potentially created on remote AFP shares
+.AppleDB
+.AppleDesktop
+Network Trash Folder
+Temporary Items
+.apdisk
+
+# End of https://www.toptal.com/developers/gitignore/api/swift,xcode
