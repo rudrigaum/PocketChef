@@ -22,6 +22,9 @@ final class MainCoordinator: Coordinator, CategoriesViewControllerDelegate {
     }
     
     func showMeals(for category: Category) {
+        let viewModel = MealsViewModel(category: category)
+        let viewController = MealsViewController(viewModel: viewModel)
+        navigationController.pushViewController(viewController, animated: true)
     }
 }
 
