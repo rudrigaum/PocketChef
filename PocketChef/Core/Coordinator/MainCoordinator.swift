@@ -8,7 +8,7 @@
 import Foundation
 import UIKit
 
-final class MainCoordinator: Coordinator {
+final class MainCoordinator: Coordinator, CategoriesViewControllerDelegate {
     var navigationController: UINavigationController
     
     init(navigationController: UINavigationController) {
@@ -17,10 +17,16 @@ final class MainCoordinator: Coordinator {
     
     func start() {
         let viewController = CategoriesViewController()
+        viewController.delegate = self
         navigationController.pushViewController(viewController, animated: false)
     }
     
     func showMeals(for category: Category) {
-        print("Coordinator was told to show meals for: \(category.name)")
+    }
+}
+
+extension MainCoordinator {
+    func categoriesViewController(_ controller: CategoriesViewController, didSelectCategory category: Category) {
+        showMeals(for: category)
     }
 }
