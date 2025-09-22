@@ -11,6 +11,7 @@ import UIKit
 final class CategoriesViewController: UIViewController {
     
     private let viewModel: CategoriesViewModelProtocol
+    weak var delegate: CategoriesViewControllerDelegate? 
     
     private var customView: CategoriesView? {
         return view as? CategoriesView
@@ -45,6 +46,7 @@ final class CategoriesViewController: UIViewController {
     
     private func setupTableView() {
         customView?.tableView.dataSource = self
+        customView?.tableView.delegate = self
     }
     
     private func setupBindings() {
@@ -79,5 +81,17 @@ extension CategoriesViewController: UITableViewDataSource {
         }
         
         return cell
+    }
+}
+
+extension CategoriesViewController: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
+    
+        guard let selectedCategory = viewModel.category(at: indexPath.row) else {
+            return
+        }
+        
+        delegate?.categoriesViewController(self, didSelectCategory: selectedCategory)
     }
 }
