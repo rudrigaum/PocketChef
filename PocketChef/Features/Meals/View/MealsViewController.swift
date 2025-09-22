@@ -11,6 +11,7 @@ import UIKit
 final class MealsViewController: UIViewController {
     
     private let viewModel: MealsViewModelProtocol
+    weak var delegate: MealsViewControllerDelegate?
     private var customView: MealsView? {
         return view as? MealsView
     }
@@ -45,6 +46,7 @@ final class MealsViewController: UIViewController {
     
     private func setupTableView() {
         customView?.tableView.dataSource = self
+        customView?.tableView.delegate = self
     }
     
     private func setupBindings() {
@@ -75,5 +77,14 @@ extension MealsViewController: UITableViewDataSource {
         }
         
         return cell
+    }
+}
+
+extension MealsViewController: UITableViewDelegate {
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
+        guard let selectedMeal = viewModel.meal(at: indexPath.row) else { return }
+        delegate?.mealsViewController(self, didSelectMeal: selectedMeal)
     }
 }
