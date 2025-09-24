@@ -11,7 +11,6 @@ final class AppCoordinator: Coordinator {
     
     let window: UIWindow
     var navigationController: UINavigationController
-    
     var childCoordinators: [Coordinator] = []
     
     init(window: UIWindow) {
@@ -20,9 +19,24 @@ final class AppCoordinator: Coordinator {
     }
     
     func start() {
-        let rootViewController = UIViewController()
-        rootViewController.view.backgroundColor = .systemTeal
-        window.rootViewController = rootViewController
+        let tabBarController = UITabBarController()
+        let mainCoordinator = MainCoordinator(navigationController: UINavigationController())
+        childCoordinators.append(mainCoordinator)
+        
+        mainCoordinator.start()
+        
+        let categoriesTab = mainCoordinator.navigationController
+        let categoriesTabIcon = UIImage(systemName: "fork.knife")
+        categoriesTab.tabBarItem = UITabBarItem(title: "Categories", image: categoriesTabIcon, tag: 0)
+        
+        let searchViewController = UIViewController()
+        searchViewController.view.backgroundColor = .systemBackground
+        let searchTabIcon = UIImage(systemName: "magnifyingglass")
+        searchViewController.tabBarItem = UITabBarItem(title: "Search", image: searchTabIcon, tag: 1)
+        
+        tabBarController.viewControllers = [categoriesTab, searchViewController]
+        
+        window.rootViewController = tabBarController
         window.makeKeyAndVisible()
     }
 }
