@@ -20,23 +20,29 @@ final class AppCoordinator: Coordinator {
     
     func start() {
         let tabBarController = UITabBarController()
+        
         let mainCoordinator = MainCoordinator(navigationController: UINavigationController())
         childCoordinators.append(mainCoordinator)
-        
         mainCoordinator.start()
         
         let categoriesTab = mainCoordinator.navigationController
         let categoriesTabIcon = UIImage(systemName: "fork.knife")
         categoriesTab.tabBarItem = UITabBarItem(title: "Categories", image: categoriesTabIcon, tag: 0)
         
-        let searchViewController = UIViewController()
-        searchViewController.view.backgroundColor = .systemBackground
-        let searchTabIcon = UIImage(systemName: "magnifyingglass")
-        searchViewController.tabBarItem = UITabBarItem(title: "Search", image: searchTabIcon, tag: 1)
+        let searchCoordinator = SearchCoordinator(navigationController: UINavigationController())
         
-        tabBarController.viewControllers = [categoriesTab, searchViewController]
+        childCoordinators.append(searchCoordinator)
+        
+        searchCoordinator.start()
+        
+        let searchTab = searchCoordinator.navigationController
+        let searchTabIcon = UIImage(systemName: "magnifyingglass")
+        searchTab.tabBarItem = UITabBarItem(title: "Search", image: searchTabIcon, tag: 1)
+        
+        tabBarController.viewControllers = [categoriesTab, searchTab]
         
         window.rootViewController = tabBarController
         window.makeKeyAndVisible()
+
     }
 }
