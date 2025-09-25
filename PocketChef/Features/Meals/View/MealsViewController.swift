@@ -47,6 +47,7 @@ final class MealsViewController: UIViewController {
     private func setupTableView() {
         customView?.tableView.dataSource = self
         customView?.tableView.delegate = self
+        customView?.tableView.register(MealCell.self, forCellReuseIdentifier: MealCell.reuseIdentifier)
     }
     
     private func setupBindings() {
@@ -68,12 +69,13 @@ extension MealsViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "MealCell", for: indexPath)
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: MealCell.reuseIdentifier, for: indexPath) as? MealCell else {
+            return UITableViewCell()
+        }
         
         if let meal = viewModel.meal(at: indexPath.row) {
-            var content = cell.defaultContentConfiguration()
-            content.text = meal.name
-            cell.contentConfiguration = content
+            let imageURL = URL(string: meal.thumbnailURLString)
+            cell.configure(with: meal.name, imageURL: imageURL)
         }
         
         return cell
