@@ -21,7 +21,7 @@ final class SearchView: UIView {
     let tableView: UITableView = {
         let tableView = UITableView()
         tableView.translatesAutoresizingMaskIntoConstraints = false
-        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "SearchResultCell")
+        tableView.rowHeight = 80
         return tableView
     }()
     

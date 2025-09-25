@@ -13,7 +13,7 @@ final class MealsView: UIView {
     let tableView: UITableView = {
         let tableView = UITableView()
         tableView.translatesAutoresizingMaskIntoConstraints = false
-        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "MealCell")
+        tableView.rowHeight = 80
         return tableView
     }()
     

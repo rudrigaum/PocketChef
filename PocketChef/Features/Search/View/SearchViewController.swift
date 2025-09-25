@@ -39,6 +39,7 @@ final class SearchViewController: UIViewController {
         title = "Search"
         customView?.tableView.dataSource = self
         customView?.searchBar.delegate = self
+        customView?.tableView.register(MealCell.self, forCellReuseIdentifier: MealCell.reuseIdentifier)
     }
     
     private func setupBindings() {
@@ -58,14 +59,14 @@ extension SearchViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "SearchResultCell", for: indexPath)
-        
-        if let meal = viewModel.result(at: indexPath.row) {
-            var content = cell.defaultContentConfiguration()
-            content.text = meal.name
-            cell.contentConfiguration = content
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: MealCell.reuseIdentifier, for: indexPath) as? MealCell else {
+            return UITableViewCell()
         }
         
+        if let meal = viewModel.result(at: indexPath.row) {
+            let imageURL = URL(string: meal.thumbnailURLString ?? "")
+            cell.configure(with: meal.name, imageURL: imageURL)
+        }
         return cell
     }
 }
