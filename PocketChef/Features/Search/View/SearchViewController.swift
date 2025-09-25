@@ -11,6 +11,8 @@ import UIKit
 final class SearchViewController: UIViewController {
     
     private let viewModel: SearchViewModelProtocol
+    weak var delegate: SearchViewControllerDelegate?
+    
     private var customView: SearchView? {
         return view as? SearchView
     }
@@ -39,6 +41,7 @@ final class SearchViewController: UIViewController {
         title = "Search"
         customView?.tableView.dataSource = self
         customView?.searchBar.delegate = self
+        customView?.tableView.delegate = self
         customView?.tableView.register(MealCell.self, forCellReuseIdentifier: MealCell.reuseIdentifier)
     }
     
@@ -78,5 +81,14 @@ extension SearchViewController: UISearchBarDelegate {
     
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         searchBar.resignFirstResponder()
+    }
+}
+
+extension SearchViewController: UITableViewDelegate {
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
+        guard let selectedMeal = viewModel.result(at: indexPath.row) else { return }
+        delegate?.searchViewController(self, didSelectMeal: selectedMeal)
     }
 }
