@@ -6,8 +6,19 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXContainerItemProxy section */
+		188AB1D12E85D0C20058AD4D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 18291AA22E79C4D800E463E1 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 18291AA92E79C4D800E463E1;
+			remoteInfo = PocketChef;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
 		18291AAA2E79C4D800E463E1 /* PocketChef.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PocketChef.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		188AB1CD2E85D0C10058AD4D /* PocketChefTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PocketChefTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -29,10 +40,22 @@
 			path = PocketChef;
 			sourceTree = "<group>";
 		};
+		188AB1CE2E85D0C20058AD4D /* PocketChefTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = PocketChefTests;
+			sourceTree = "<group>";
+		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		18291AA72E79C4D800E463E1 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		188AB1CA2E85D0C10058AD4D /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -46,6 +69,7 @@
 			isa = PBXGroup;
 			children = (
 				18291AAC2E79C4D800E463E1 /* PocketChef */,
+				188AB1CE2E85D0C20058AD4D /* PocketChefTests */,
 				18291AAB2E79C4D800E463E1 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -54,6 +78,7 @@
 			isa = PBXGroup;
 			children = (
 				18291AAA2E79C4D800E463E1 /* PocketChef.app */,
+				188AB1CD2E85D0C10058AD4D /* PocketChefTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -83,6 +108,29 @@
 			productReference = 18291AAA2E79C4D800E463E1 /* PocketChef.app */;
 			productType = "com.apple.product-type.application";
 		};
+		188AB1CC2E85D0C10058AD4D /* PocketChefTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 188AB1D52E85D0C20058AD4D /* Build configuration list for PBXNativeTarget "PocketChefTests" */;
+			buildPhases = (
+				188AB1C92E85D0C10058AD4D /* Sources */,
+				188AB1CA2E85D0C10058AD4D /* Frameworks */,
+				188AB1CB2E85D0C10058AD4D /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				188AB1D22E85D0C20058AD4D /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				188AB1CE2E85D0C20058AD4D /* PocketChefTests */,
+			);
+			name = PocketChefTests;
+			packageProductDependencies = (
+			);
+			productName = PocketChefTests;
+			productReference = 188AB1CD2E85D0C10058AD4D /* PocketChefTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -95,6 +143,11 @@
 				TargetAttributes = {
 					18291AA92E79C4D800E463E1 = {
 						CreatedOnToolsVersion = 16.4;
+					};
+					188AB1CC2E85D0C10058AD4D = {
+						CreatedOnToolsVersion = 16.4;
+						LastSwiftMigration = 1640;
+						TestTargetID = 18291AA92E79C4D800E463E1;
 					};
 				};
 			};
@@ -113,12 +166,20 @@
 			projectRoot = "";
 			targets = (
 				18291AA92E79C4D800E463E1 /* PocketChef */,
+				188AB1CC2E85D0C10058AD4D /* PocketChefTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
 		18291AA82E79C4D800E463E1 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		188AB1CB2E85D0C10058AD4D /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -135,7 +196,22 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		188AB1C92E85D0C10058AD4D /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		188AB1D22E85D0C20058AD4D /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 18291AA92E79C4D800E463E1 /* PocketChef */;
+			targetProxy = 188AB1D12E85D0C20058AD4D /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		18291ABE2E79C4DA00E463E1 /* Debug */ = {
@@ -315,6 +391,45 @@
 			};
 			name = Release;
 		};
+		188AB1D32E85D0C20058AD4D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 8MF89G73K4;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.rudrigo.PocketChefTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/PocketChef.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/PocketChef";
+			};
+			name = Debug;
+		};
+		188AB1D42E85D0C20058AD4D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 8MF89G73K4;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.rudrigo.PocketChefTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/PocketChef.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/PocketChef";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -332,6 +447,15 @@
 			buildConfigurations = (
 				18291ABE2E79C4DA00E463E1 /* Debug */,
 				18291ABF2E79C4DA00E463E1 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		188AB1D52E85D0C20058AD4D /* Build configuration list for PBXNativeTarget "PocketChefTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				188AB1D32E85D0C20058AD4D /* Debug */,
+				188AB1D42E85D0C20058AD4D /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
