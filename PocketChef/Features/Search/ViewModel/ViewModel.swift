@@ -8,6 +8,7 @@
 import Foundation
 import Combine
 
+@MainActor
 final class SearchViewModel: SearchViewModelProtocol {
     
     // MARK: - Publishers (Data Binding)
@@ -26,7 +27,6 @@ final class SearchViewModel: SearchViewModelProtocol {
     private var searchResults: [PocketChef.MealDetails] = []
     private let networkService: NetworkServiceProtocol
     private let baseURL = "https://www.themealdb.com/api/json/v1/1/search.php?s="
-    
     private var searchTask: Task<Void, Never>?
 
     // MARK: - Initialization
@@ -45,7 +45,7 @@ final class SearchViewModel: SearchViewModelProtocol {
     }
     
     // MARK: - View Actions
-    func search(for query: String) async {
+    func search(for query: String) {
         searchTask?.cancel()
         
         guard !query.trimmingCharacters(in: .whitespaces).isEmpty else {
@@ -57,23 +57,20 @@ final class SearchViewModel: SearchViewModelProtocol {
         searchTask = Task {
             do {
                 try await Task.sleep(nanoseconds: 500_000_000)
-                
+            
                 let response: MealDetailsResponse = try await networkService.request(urlString: baseURL + query)
                 self.searchResults = (response.meals ?? []).sorted { $0.name < $1.name }
-                
                 self.searchResultsSubject.send(self.searchResults)
                 
             } catch is CancellationError {
                 return
-            } catch let error as NetworkError {
-                if case .decodingFailed = error {
+            } catch {
+                if let networkError = error as? NetworkError, case .decodingFailed = networkError {
                     self.searchResults = []
                     self.searchResultsSubject.send(self.searchResults)
                 } else {
                     self.errorSubject.send(error.localizedDescription)
                 }
-            } catch {
-                self.errorSubject.send(error.localizedDescription)
             }
         }
     }

@@ -22,8 +22,15 @@ struct MealDetails: Decodable {
     let name: String
     let instructions: String
     let thumbnailURLString: String?
-    
     let ingredients: [Ingredient]
+    
+    init(id: String, name: String, instructions: String, thumbnailURLString: String?, ingredients: [Ingredient]) {
+        self.id = id
+        self.name = name
+        self.instructions = instructions
+        self.thumbnailURLString = thumbnailURLString
+        self.ingredients = ingredients
+    }
     
     enum CodingKeys: String, CodingKey {
         case id = "idMeal"

@@ -11,8 +11,11 @@ import Foundation
 final class MockNetworkService: NetworkServiceProtocol {
     
     var mockResult: Result<Any, NetworkError>?
+    var requestCallCount = 0
 
     func request<T: Decodable>(urlString: String) async throws -> T {
+        requestCallCount += 1
+        
         guard let result = mockResult else {
             fatalError("MockNetworkService is not configured. Set the 'mockResult' property before calling 'request'.")
         }
