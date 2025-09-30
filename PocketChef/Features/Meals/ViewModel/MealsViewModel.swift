@@ -6,22 +6,35 @@
 //
 
 import Foundation
+import Combine
 
 final class MealsViewModel: MealsViewModelProtocol {
     
-    var onMealsUpdated: (() -> Void)?
-    var onFetchError: ((String) -> Void)?
+    // MARK: - Publishers (Data Binding)
+    var mealsPublisher: AnyPublisher<[Meal], Never> {
+        mealsSubject.eraseToAnyPublisher()
+    }
+    
+    var errorPublisher: AnyPublisher<String, Never> {
+        errorSubject.eraseToAnyPublisher()
+    }
+    
+    // MARK: - Private Properties
+    private let mealsSubject = PassthroughSubject<[Meal], Never>()
+    private let errorSubject = PassthroughSubject<String, Never>()
     
     private var meals: [Meal] = []
-    private let category: Category
+    private let category: PocketChef.Category
     private let networkService: NetworkServiceProtocol
     private let baseURL = "https://www.themealdb.com/api/json/v1/1/filter.php?c="
     
-    init(category: Category, networkService: NetworkServiceProtocol = NetworkService()) {
+    // MARK: - Initialization
+    init(category: PocketChef.Category, networkService: NetworkServiceProtocol = NetworkService()) {
         self.category = category
         self.networkService = networkService
     }
     
+    // MARK: - Data Source
     var screenTitle: String {
         return "\(category.name) Meals"
     }
@@ -37,19 +50,16 @@ final class MealsViewModel: MealsViewModelProtocol {
         return meals[index]
     }
     
-    func fetchMeals() {
+    // MARK: - View Actions
+    func fetchMeals() async {
         let urlString = baseURL + category.name
         
-        networkService.request(urlString: urlString) { [weak self] (result: Result<MealsResponse, NetworkError>) in
-            guard let self = self else { return }
-            
-            switch result {
-            case .success(let response):
-                self.meals = response.meals.sorted { $0.name < $1.name }
-                self.onMealsUpdated?()
-            case .failure(let error):
-                self.onFetchError?(error.localizedDescription)
-            }
+        do {
+            let response: MealsResponse = try await networkService.request(urlString: urlString)
+            self.meals = response.meals.sorted { $0.name < $1.name }
+            mealsSubject.send(self.meals)
+        } catch {
+            errorSubject.send(error.localizedDescription)
         }
     }
 }

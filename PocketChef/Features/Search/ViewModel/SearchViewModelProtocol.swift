@@ -6,13 +6,18 @@
 //
 
 import Foundation
+import Combine
 
 protocol SearchViewModelProtocol: AnyObject {
     
-    var onSearchResultsUpdated: (() -> Void)? { get set }
-    var onFetchError: ((String) -> Void)? { get set }
-    var numberOfResults: Int { get }
+    // MARK: - Publishers for Data Binding
+    var searchResultsPublisher: AnyPublisher<[PocketChef.MealDetails], Never> { get }
+    var errorPublisher: AnyPublisher<String, Never> { get }
     
-    func result(at index: Int) -> MealDetails?
-    func search(for query: String)
+    // MARK: - Data Source
+    var numberOfResults: Int { get }
+    func result(at index: Int) -> PocketChef.MealDetails?
+    
+    // MARK: - View Actions
+    func search(for query: String) async
 }

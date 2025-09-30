@@ -6,44 +6,54 @@
 //
 
 import Foundation
+import Combine
 
 final class CategoriesViewModel: CategoriesViewModelProtocol {
     
-    var onCategoriesUpdated: (() -> Void)?
-    var onFetchError: ((String) -> Void)?
+    // MARK: - Private Properties
+    private let categoriesSubject = PassthroughSubject<[PocketChef.Category], Never>()
+    private let errorSubject = PassthroughSubject<String, Never>()
     
-    private var categories: [Category] = []
+    private var categories: [PocketChef.Category] = []
     private let networkService: NetworkServiceProtocol
     private let categoriesURL = "https://www.themealdb.com/api/json/v1/1/categories.php"
     
+    // MARK: - Public Publishers (Data Binding)
+    var categoriesPublisher: AnyPublisher<[PocketChef.Category], Never> {
+        categoriesSubject.eraseToAnyPublisher()
+    }
+    
+    var errorPublisher: AnyPublisher<String, Never> {
+        errorSubject.eraseToAnyPublisher()
+    }
+    
+    // MARK: - Initialization
     init(networkService: NetworkServiceProtocol = NetworkService()) {
         self.networkService = networkService
     }
     
+    // MARK: - Data Source
     var numberOfCategories: Int {
         return categories.count
     }
     
-    func category(at index: Int) -> Category? {
+    func category(at index: Int) -> PocketChef.Category? {
         guard index >= 0 && index < categories.count else {
             return nil
         }
         return categories[index]
     }
     
-    func fetchCategories() {
-        networkService.request(urlString: categoriesURL) { [weak self] (result: Result<CategoriesResponse, NetworkError>) in
-            guard let self = self else { return }
+    // MARK: - View Actions
+    func fetchCategories() async {
+        do {
+            let response: CategoriesResponse = try await networkService.request(urlString: categoriesURL)
+            self.categories = response.categories
             
-            DispatchQueue.main.async {
-                switch result {
-                case .success(let response):
-                    self.categories = response.categories
-                    self.onCategoriesUpdated?()
-                case .failure(let error):
-                    self.onFetchError?(error.localizedDescription)
-                }
-            }
+            categoriesSubject.send(self.categories)
+            
+        } catch {
+            errorSubject.send(error.localizedDescription)
         }
     }
 }

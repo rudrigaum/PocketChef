@@ -9,46 +9,30 @@ import Foundation
 
 final class NetworkService: NetworkServiceProtocol {
     
-    func request<T: Decodable>(urlString: String, completion: @escaping (Result<T, NetworkError>) -> Void) {
-        
+    func request<T: Decodable>(urlString: String) async throws -> T {
+
         guard let url = URL(string: urlString) else {
-            completion(.failure(.invalidURL))
-            return
-        }
-        
-        let task = URLSession.shared.dataTask(with: url) { data, response, error in
-            let result = self.handleResponse(data: data, response: response, error: error) as Result<T, NetworkError>
-            
-            DispatchQueue.main.async {
-                completion(result)
-            }
-        }
-        
-        task.resume()
-    }
-    
-    private func handleResponse<T: Decodable>(data: Data?, response: URLResponse?, error: Error?) -> Result<T, NetworkError> {
-        if let error = error {
-            return .failure(.requestFailed(error))
-        }
-        
-        guard let httpResponse = response as? HTTPURLResponse else {
-            return .failure(.invalidResponse)
-        }
-        
-        guard (200...299).contains(httpResponse.statusCode) else {
-            return .failure(.serverError(statusCode: httpResponse.statusCode))
-        }
-        
-        guard let data = data else {
-            return .failure(.invalidResponse)
+            throw NetworkError.invalidURL
         }
         
         do {
+            let (data, response) = try await URLSession.shared.data(from: url)
+            
+            guard let httpResponse = response as? HTTPURLResponse else {
+                throw NetworkError.invalidResponse
+            }
+            
+            guard (200...299).contains(httpResponse.statusCode) else {
+                throw NetworkError.serverError(statusCode: httpResponse.statusCode)
+            }
+            
             let decodedObject = try JSONDecoder().decode(T.self, from: data)
-            return .success(decodedObject)
+            return decodedObject
+            
+        } catch let error as NetworkError {
+            throw error
         } catch {
-            return .failure(.decodingFailed(error))
+            throw NetworkError.requestFailed(error)
         }
     }
 }

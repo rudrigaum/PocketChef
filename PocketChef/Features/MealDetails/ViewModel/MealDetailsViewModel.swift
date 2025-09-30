@@ -6,58 +6,56 @@
 //
 
 import Foundation
+import Combine
 
 final class MealDetailsViewModel: MealDetailsViewModelProtocol {
     
-    var onDetailsUpdated: (() -> Void)?
-    var onFetchError: ((String) -> Void)?
+    // MARK: - Publishers (Data Binding)
+    var detailsPublisher: AnyPublisher<MealDetails, Never> {
+        detailsSubject.eraseToAnyPublisher()
+    }
+    
+    var errorPublisher: AnyPublisher<String, Never> {
+        errorSubject.eraseToAnyPublisher()
+    }
+    
+    // MARK: - Private Properties
+    private let detailsSubject = PassthroughSubject<MealDetails, Never>()
+    private let errorSubject = PassthroughSubject<String, Never>()
     
     private let mealSummary: Meal
-    private var mealDetails: MealDetails?
     private let networkService: NetworkServiceProtocol
     private let baseURL = "https://www.themealdb.com/api/json/v1/1/lookup.php?i="
 
+    // MARK: - Initialization
     init(meal: Meal, networkService: NetworkServiceProtocol = NetworkService()) {
         self.mealSummary = meal
         self.networkService = networkService
     }
     
+    // MARK: - Data Source
     var mealName: String {
         return mealSummary.name
     }
     
     var mealThumbnailURL: URL? {
-        guard let urlString = mealDetails?.thumbnailURLString else {
-            return URL(string: mealSummary.thumbnailURLString)
-        }
-        return URL(string: urlString)
+        return URL(string: mealSummary.thumbnailURLString)
     }
     
-    var instructions: String {
-        return mealDetails?.instructions ?? "Loading instructions..."
-    }
-    
-    var ingredients: [MealDetails.Ingredient] {
-        return mealDetails?.ingredients ?? []
-    }
-    
-    func fetchDetails() {
+    // MARK: - View Actions
+    func fetchDetails() async {
         let urlString = baseURL + mealSummary.id
         
-        networkService.request(urlString: urlString) { [weak self] (result: Result<MealDetailsResponse, NetworkError>) in
-            guard let self = self else { return }
+        do {
+            let response: MealDetailsResponse = try await networkService.request(urlString: urlString)
             
-            switch result {
-            case .success(let response):
-                if let details = response.meals.first {
-                    self.mealDetails = details
-                    self.onDetailsUpdated?()
-                } else {
-                    self.onFetchError?("Meal details could not be found.")
-                }
-            case .failure(let error):
-                self.onFetchError?(error.localizedDescription)
+            if let details = response.meals.first {
+                detailsSubject.send(details)
+            } else {
+                throw NetworkError.invalidResponse
             }
+        } catch {
+            errorSubject.send(error.localizedDescription)
         }
     }
 }
