@@ -7,14 +7,19 @@
 
 import Foundation
 import UIKit
+import Combine
 
 final class MealDetailsViewController: UIViewController {
     
+    // MARK: - Properties
     private let viewModel: MealDetailsViewModelProtocol
     private var customView: MealDetailsView? {
         return view as? MealDetailsView
     }
     
+    private var cancellables = Set<AnyCancellable>()
+    
+    // MARK: - Initialization
     init(viewModel: MealDetailsViewModelProtocol) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
@@ -24,6 +29,7 @@ final class MealDetailsViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
+    // MARK: - Lifecycle
     override func loadView() {
         self.view = MealDetailsView()
     }
@@ -32,29 +38,39 @@ final class MealDetailsViewController: UIViewController {
         super.viewDidLoad()
         
         setupBindings()
-        title = viewModel.mealName
         
+        title = viewModel.mealName
         customView?.activityIndicator.startAnimating()
-        viewModel.fetchDetails()
+        
+        Task {
+            await viewModel.fetchDetails()
+        }
     }
     
+    // MARK: - Private Methods
     private func setupBindings() {
-        viewModel.onDetailsUpdated = { [weak self] in
-            self?.updateView()
-        }
-        
-        viewModel.onFetchError = { [weak self] errorMessage in
-            self?.customView?.activityIndicator.stopAnimating()
-            print("Error fetching details: \(errorMessage)")
-        }
+        viewModel.detailsPublisher
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] mealDetails in
+                self?.updateView(with: mealDetails)
+            }
+            .store(in: &cancellables)
+            
+        viewModel.errorPublisher
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] errorMessage in
+                self?.customView?.activityIndicator.stopAnimating()
+                print("Error fetching details: \(errorMessage)")
+            }
+            .store(in: &cancellables)
     }
-
-    private func updateView() {
+    
+    private func updateView(with details: MealDetails) {
         guard let customView = self.customView else { return }
         
         customView.activityIndicator.stopAnimating()
-        customView.instructionsLabel.text = self.viewModel.instructions
-        customView.displayIngredients(self.viewModel.ingredients)
-        customView.mealImageView.loadImage(from: self.viewModel.mealThumbnailURL)
+        customView.instructionsLabel.text = details.instructions
+        customView.displayIngredients(details.ingredients)
+        customView.mealImageView.loadImage(from: URL(string: details.thumbnailURLString ?? ""))
     }
 }

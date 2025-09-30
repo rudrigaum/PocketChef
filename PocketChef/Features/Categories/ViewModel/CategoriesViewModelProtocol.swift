@@ -6,11 +6,21 @@
 //
 
 import Foundation
+import Combine
 
 protocol CategoriesViewModelProtocol: AnyObject {
-    var onCategoriesUpdated: (() -> Void)? { get set }
-    var onFetchError: ((String) -> Void)? { get set }
+    
+    // MARK: - Publishers for Data Binding
+
+    var categoriesPublisher: AnyPublisher<[PocketChef.Category], Never> { get }
+    var errorPublisher: AnyPublisher<String, Never> { get }
+    
+    // MARK: - Data Source (agora derivado dos Publishers)
+    
     var numberOfCategories: Int { get }
-    func category(at index: Int) -> Category?
-    func fetchCategories()
+    func category(at index: Int) -> PocketChef.Category?
+    
+    // MARK: - View Actions
+    
+    func fetchCategories() async
 }

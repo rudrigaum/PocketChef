@@ -6,14 +6,18 @@
 //
 
 import Foundation
+import Combine
 
 protocol MealDetailsViewModelProtocol: AnyObject {
-    var onDetailsUpdated: (() -> Void)? { get set }
-    var onFetchError: ((String) -> Void)? { get set }
+    
+    // MARK: - Publishers for Data Binding
+    var detailsPublisher: AnyPublisher<MealDetails, Never> { get }
+    var errorPublisher: AnyPublisher<String, Never> { get }
+    
+    // MARK: - Data Source
     var mealName: String { get }
     var mealThumbnailURL: URL? { get }
-    var instructions: String { get }
-    var ingredients: [MealDetails.Ingredient] { get }
     
-    func fetchDetails()
+    // MARK: - View Actions
+    func fetchDetails() async
 }

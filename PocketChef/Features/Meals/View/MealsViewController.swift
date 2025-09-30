@@ -7,59 +7,72 @@
 
 import Foundation
 import UIKit
+import Combine
 
 final class MealsViewController: UIViewController {
-    
+
+    // MARK: - Properties
     private let viewModel: MealsViewModelProtocol
     weak var delegate: MealsViewControllerDelegate?
+
     private var customView: MealsView? {
         return view as? MealsView
     }
-    
+
+    private var cancellables = Set<AnyCancellable>()
+
+    // MARK: - Initialization
     init(viewModel: MealsViewModelProtocol) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
     }
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
+    // MARK: - Lifecycle
     override func loadView() {
         self.view = MealsView()
     }
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        setupView()
-        setupTableView()
+
+        setupUI()
         setupBindings()
-        
+
         customView?.activityIndicator.startAnimating()
-        viewModel.fetchMeals()
+        
+        Task {
+            await viewModel.fetchMeals()
+        }
     }
-    
-    private func setupView() {
+
+    // MARK: - Private Methods
+    private func setupUI() {
         title = viewModel.screenTitle
-    }
-    
-    private func setupTableView() {
         customView?.tableView.dataSource = self
         customView?.tableView.delegate = self
         customView?.tableView.register(MealCell.self, forCellReuseIdentifier: MealCell.reuseIdentifier)
     }
-    
+
     private func setupBindings() {
-        viewModel.onMealsUpdated = { [weak self] in
-            self?.customView?.tableView.reloadData()
-            self?.customView?.activityIndicator.stopAnimating()
-        }
-        
-        viewModel.onFetchError = { [weak self] errorMessage in
-            print("Error fetching meals: \(errorMessage)")
-            self?.customView?.activityIndicator.stopAnimating()
-        }
+        viewModel.mealsPublisher
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] _ in
+                self?.customView?.activityIndicator.stopAnimating()
+                self?.customView?.tableView.reloadData()
+            }
+            .store(in: &cancellables)
+
+        viewModel.errorPublisher
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] errorMessage in
+                self?.customView?.activityIndicator.stopAnimating()
+                print("Error fetching meals: \(errorMessage)")
+            }
+            .store(in: &cancellables)
     }
 }
 
@@ -83,10 +96,11 @@ extension MealsViewController: UITableViewDataSource {
 }
 
 extension MealsViewController: UITableViewDelegate {
-    
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
+        
         guard let selectedMeal = viewModel.meal(at: indexPath.row) else { return }
+        
         delegate?.mealsViewController(self, didSelectMeal: selectedMeal)
     }
 }

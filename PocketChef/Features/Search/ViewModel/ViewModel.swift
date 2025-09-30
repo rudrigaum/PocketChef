@@ -6,64 +6,74 @@
 //
 
 import Foundation
+import Combine
 
 final class SearchViewModel: SearchViewModelProtocol {
-
-    var onSearchResultsUpdated: (() -> Void)?
-    var onFetchError: ((String) -> Void)?
     
-    private var searchResults: [MealDetails] = []
+    // MARK: - Publishers (Data Binding)
+    var searchResultsPublisher: AnyPublisher<[PocketChef.MealDetails], Never> {
+        searchResultsSubject.eraseToAnyPublisher()
+    }
+    
+    var errorPublisher: AnyPublisher<String, Never> {
+        errorSubject.eraseToAnyPublisher()
+    }
+    
+    // MARK: - Private Properties
+    private let searchResultsSubject = PassthroughSubject<[PocketChef.MealDetails], Never>()
+    private let errorSubject = PassthroughSubject<String, Never>()
+    
+    private var searchResults: [PocketChef.MealDetails] = []
     private let networkService: NetworkServiceProtocol
     private let baseURL = "https://www.themealdb.com/api/json/v1/1/search.php?s="
-    private var searchWorkItem: DispatchWorkItem?
     
+    private var searchTask: Task<Void, Never>?
+
+    // MARK: - Initialization
     init(networkService: NetworkServiceProtocol = NetworkService()) {
         self.networkService = networkService
     }
     
+    // MARK: - Data Source
     var numberOfResults: Int {
         return searchResults.count
     }
     
-    func result(at index: Int) -> MealDetails? {
+    func result(at index: Int) -> PocketChef.MealDetails? {
         guard index >= 0 && index < searchResults.count else { return nil }
         return searchResults[index]
     }
     
-    func search(for query: String) {
-        searchWorkItem?.cancel()
+    // MARK: - View Actions
+    func search(for query: String) async {
+        searchTask?.cancel()
         
         guard !query.trimmingCharacters(in: .whitespaces).isEmpty else {
             self.searchResults = []
-            self.onSearchResultsUpdated?()
+            self.searchResultsSubject.send(self.searchResults)
             return
         }
 
-        let newSearchWorkItem = DispatchWorkItem { [weak self] in
-            self?.performSearch(query: query)
-        }
-        
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: newSearchWorkItem)
-        self.searchWorkItem = newSearchWorkItem
-    }
-    
-    private func performSearch(query: String) {
-        let urlString = baseURL + query
-        
-        networkService.request(urlString: urlString) { [weak self] (result: Result<MealDetailsResponse, NetworkError>) in
-            guard let self = self else { return }
-            
-            switch result {
-            case .success(let response):
-                self.searchResults = response.meals.sorted { $0.name < $1.name }
-                self.onSearchResultsUpdated?()
-            case .failure(let error):
+        searchTask = Task {
+            do {
+                try await Task.sleep(nanoseconds: 500_000_000)
+                
+                let response: MealDetailsResponse = try await networkService.request(urlString: baseURL + query)
+                self.searchResults = (response.meals ?? []).sorted { $0.name < $1.name }
+                
+                self.searchResultsSubject.send(self.searchResults)
+                
+            } catch is CancellationError {
+                return
+            } catch let error as NetworkError {
                 if case .decodingFailed = error {
                     self.searchResults = []
-                    self.onSearchResultsUpdated?()
+                    self.searchResultsSubject.send(self.searchResults)
                 } else {
-                    self.onFetchError?(error.localizedDescription)
+                    self.errorSubject.send(error.localizedDescription)
                 }
+            } catch {
+                self.errorSubject.send(error.localizedDescription)
             }
         }
     }

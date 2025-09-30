@@ -7,17 +7,21 @@
 
 import Foundation
 import UIKit
+import Combine
 
 final class CategoriesViewController: UIViewController {
     
+    // MARK: - Properties
     private let viewModel: CategoriesViewModelProtocol
-    weak var delegate: CategoriesViewControllerDelegate? 
+    weak var delegate: CategoriesViewControllerDelegate?
     
     private var customView: CategoriesView? {
         return view as? CategoriesView
     }
     
+    private var cancellables = Set<AnyCancellable>()
     
+    // MARK: - Initialization
     init(viewModel: CategoriesViewModelProtocol = CategoriesViewModel()) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
@@ -27,6 +31,7 @@ final class CategoriesViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
+    // MARK: - Lifecycle
     override func loadView() {
         self.view = CategoriesView()
     }
@@ -39,30 +44,35 @@ final class CategoriesViewController: UIViewController {
         setupBindings()
         
         customView?.activityIndicator.startAnimating()
-        viewModel.fetchCategories()
+        
+        Task {
+            await viewModel.fetchCategories()
+        }
     }
     
     // MARK: - Private Methods
-    
     private func setupTableView() {
         customView?.tableView.dataSource = self
         customView?.tableView.delegate = self
+        customView?.tableView.register(MealCell.self, forCellReuseIdentifier: "CategoryCell")
     }
     
     private func setupBindings() {
-        viewModel.onCategoriesUpdated = { [weak self] in
-            DispatchQueue.main.async {
+        viewModel.categoriesPublisher
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] _ in
+                self?.customView?.activityIndicator.stopAnimating()
                 self?.customView?.tableView.reloadData()
-                self?.customView?.activityIndicator.stopAnimating()
             }
-        }
-        
-        viewModel.onFetchError = { [weak self] errorMessage in
-            DispatchQueue.main.async {
+            .store(in: &cancellables)
+            
+        viewModel.errorPublisher
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] errorMessage in
+                self?.customView?.activityIndicator.stopAnimating()
                 print("Error fetching categories: \(errorMessage)")
-                self?.customView?.activityIndicator.stopAnimating()
             }
-        }
+            .store(in: &cancellables)
     }
 }
 
