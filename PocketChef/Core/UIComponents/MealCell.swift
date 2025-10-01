@@ -43,7 +43,7 @@ final class MealCell: UITableViewCell {
     
     func configure(with mealName: String, imageURL: URL?) {
         mealNameLabel.text = mealName
-        mealImageView.loadImage(from: imageURL)
+        ImageLoader.shared.loadImage(into: mealImageView, from: imageURL)
     }
     
     private func setupView() {
