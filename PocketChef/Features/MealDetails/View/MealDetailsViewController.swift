@@ -71,6 +71,7 @@ final class MealDetailsViewController: UIViewController {
         customView.activityIndicator.stopAnimating()
         customView.instructionsLabel.text = details.instructions
         customView.displayIngredients(details.ingredients)
-        customView.mealImageView.loadImage(from: URL(string: details.thumbnailURLString ?? ""))
+        let imageURL = URL(string: details.thumbnailURLString ?? "")
+        ImageLoader.shared.loadImage(into: customView.mealImageView, from: imageURL)
     }
 }
