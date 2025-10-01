@@ -8,6 +8,7 @@
 import Foundation
 import Combine
 
+@MainActor
 final class MealDetailsViewModel: MealDetailsViewModelProtocol {
     
     // MARK: - Publishers (Data Binding)

@@ -19,5 +19,5 @@ protocol SearchViewModelProtocol: AnyObject {
     func result(at index: Int) -> PocketChef.MealDetails?
     
     // MARK: - View Actions
-    func search(for query: String) async
+    func search(for query: String)
 }

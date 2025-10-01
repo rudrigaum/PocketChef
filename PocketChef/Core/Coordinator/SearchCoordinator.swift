@@ -8,6 +8,7 @@
 import Foundation
 import UIKit
 
+@MainActor
 final class SearchCoordinator: Coordinator, SearchViewControllerDelegate {
     var navigationController: UINavigationController
     
@@ -16,7 +17,8 @@ final class SearchCoordinator: Coordinator, SearchViewControllerDelegate {
     }
     
     func start() {
-        let searchViewController = SearchViewController()
+        let viewModel = SearchViewModel()
+        let searchViewController = SearchViewController(viewModel: viewModel)
         searchViewController.delegate = self
         navigationController.pushViewController(searchViewController, animated: false)
     }

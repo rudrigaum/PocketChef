@@ -9,6 +9,7 @@ import Foundation
 import UIKit
 import Combine
 
+@MainActor
 final class SearchViewController: UIViewController {
 
     // MARK: - Properties
@@ -22,7 +23,7 @@ final class SearchViewController: UIViewController {
     private var cancellables = Set<AnyCancellable>()
 
     // MARK: - Initialization
-    init(viewModel: SearchViewModelProtocol = SearchViewModel()) {
+    init(viewModel: SearchViewModelProtocol) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
     }
@@ -102,9 +103,7 @@ extension SearchViewController: UITableViewDelegate {
 // MARK: - UISearchBarDelegate
 extension SearchViewController: UISearchBarDelegate {
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        Task {
-            await viewModel.search(for: searchText)
-        }
+            viewModel.search(for: searchText)
     }
 
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
