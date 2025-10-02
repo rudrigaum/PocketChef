@@ -20,6 +20,7 @@ final class SearchViewController: UIViewController {
         return view as? SearchView
     }
     
+    private let emptyStateView = EmptyStateView()
     private var searchHistory: [String] = []
     private var searchResults: [PocketChef.MealDetails] = []
     
@@ -39,13 +40,11 @@ final class SearchViewController: UIViewController {
     override func loadView() {
         self.view = SearchView()
     }
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         setupUI()
         setupBindings()
-        
         viewModel.loadInitialState()
     }
     
@@ -57,6 +56,7 @@ final class SearchViewController: UIViewController {
         customView?.searchBar.delegate = self
         customView?.tableView.register(MealCell.self, forCellReuseIdentifier: MealCell.reuseIdentifier)
         customView?.tableView.register(HistoryCell.self, forCellReuseIdentifier: HistoryCell.reuseIdentifier)
+        customView?.tableView.backgroundView = emptyStateView
     }
 
     private func setupBindings() {
@@ -68,30 +68,46 @@ final class SearchViewController: UIViewController {
             .store(in: &cancellables)
     }
     
+
     private func handle(state: SearchState) {
+        if case .loading = state {
+            customView?.activityIndicator.startAnimating()
+        } else {
+            customView?.activityIndicator.stopAnimating()
+        }
+
         switch state {
         case .idle:
-            customView?.activityIndicator.stopAnimating()
+            emptyStateView.isHidden = true
             
         case .loading:
-            customView?.activityIndicator.startAnimating()
+            emptyStateView.isHidden = true
+            searchResults = []
+            searchHistory = []
             
         case .showingHistory(let history):
-            customView?.activityIndicator.stopAnimating()
-            self.searchHistory = history
-            self.searchResults = []
-            customView?.tableView.reloadData()
+            searchHistory = history
+            searchResults = []
+            emptyStateView.configure(with: "Your recent searches will appear here.", iconName: "clock")
+            emptyStateView.isHidden = !history.isEmpty
             
         case .showingResults(let results):
-            customView?.activityIndicator.stopAnimating()
-            self.searchHistory = []
-            self.searchResults = results
-            customView?.tableView.reloadData()
+            searchHistory = []
+            searchResults = results
+            if results.isEmpty {
+                let searchTerm = customView?.searchBar.text ?? ""
+                let message = "No results found for \"\(searchTerm)\".\nPlease try another search."
+                emptyStateView.configure(with: message, iconName: "magnifyingglass")
+            }
+            emptyStateView.isHidden = !results.isEmpty
             
         case .error(let message):
-            customView?.activityIndicator.stopAnimating()
-            print("Search Error: \(message)")
+            searchHistory = []
+            searchResults = []
+            emptyStateView.configure(with: message, iconName: "exclamationmark.triangle")
+            emptyStateView.isHidden = false
         }
+        customView?.tableView.reloadData()
     }
 }
 
