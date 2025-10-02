@@ -50,7 +50,7 @@ final class MealDetailsViewModel: MealDetailsViewModelProtocol {
         do {
             let response: MealDetailsResponse = try await networkService.request(urlString: urlString)
             
-            if let details = response.meals.first {
+            if let details = response.meals?.first {
                 detailsSubject.send(details)
             } else {
                 throw NetworkError.invalidResponse
