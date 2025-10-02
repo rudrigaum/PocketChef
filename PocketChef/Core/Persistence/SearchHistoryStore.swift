@@ -11,4 +11,5 @@ protocol SearchHistoryStore {
     func save(searchTerm term: String)
     func getSearchHistory() -> [String]
     func clearSearchHistory()
+    func remove(searchTerm term: String)
 }

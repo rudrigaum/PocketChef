@@ -26,4 +26,5 @@ protocol SearchViewModelProtocol: AnyObject {
     // MARK: - View Actions
     func loadInitialState()
     func search(for query: String)
+    func deleteHistory(term: String) 
 }
