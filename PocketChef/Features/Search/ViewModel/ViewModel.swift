@@ -67,4 +67,11 @@ final class SearchViewModel: SearchViewModelProtocol {
             }
         }
     }
+    
+    func deleteHistory(term: String) {
+        searchHistoryStore.remove(searchTerm: term)
+        
+        let updatedHistory = searchHistoryStore.getSearchHistory()
+        stateSubject.send(.showingHistory(updatedHistory))
+    }
 }

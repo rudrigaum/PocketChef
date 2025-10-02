@@ -56,7 +56,7 @@ final class SearchViewController: UIViewController {
         customView?.tableView.delegate = self
         customView?.searchBar.delegate = self
         customView?.tableView.register(MealCell.self, forCellReuseIdentifier: MealCell.reuseIdentifier)
-        customView?.tableView.register(UITableViewCell.self, forCellReuseIdentifier: "HistoryCell")
+        customView?.tableView.register(HistoryCell.self, forCellReuseIdentifier: HistoryCell.reuseIdentifier)
     }
 
     private func setupBindings() {
@@ -100,23 +100,29 @@ extension SearchViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return !searchResults.isEmpty ? searchResults.count : searchHistory.count
     }
-
+    
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if !searchResults.isEmpty {
             guard let cell = tableView.dequeueReusableCell(withIdentifier: MealCell.reuseIdentifier, for: indexPath) as? MealCell else {
                 return UITableViewCell()
             }
-            
             let meal = searchResults[indexPath.row]
             let imageURL = URL(string: meal.thumbnailURLString ?? "")
             cell.configure(with: meal.name, imageURL: imageURL)
             return cell
+
         } else {
-            let cell = tableView.dequeueReusableCell(withIdentifier: "HistoryCell", for: indexPath)
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: HistoryCell.reuseIdentifier, for: indexPath) as? HistoryCell else {
+                return UITableViewCell()
+            }
+
             let term = searchHistory[indexPath.row]
-            var content = cell.defaultContentConfiguration()
-            content.text = term
-            cell.contentConfiguration = content
+            cell.configure(with: term)
+
+            cell.onDeleteButtonTapped = { [weak self] in
+                self?.viewModel.deleteHistory(term: term)
+            }
+
             return cell
         }
     }

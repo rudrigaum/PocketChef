@@ -32,6 +32,12 @@ final class UserDefaultsSearchHistoryStore: SearchHistoryStore {
         userDefaults.set(limitedHistory, forKey: Self.historyKey)
     }
     
+    func remove(searchTerm term: String) {
+        var history = getSearchHistory()
+        history.removeAll { $0.lowercased() == term.lowercased() }
+        userDefaults.set(history, forKey: Self.historyKey)
+    }
+    
     func getSearchHistory() -> [String] {
         return userDefaults.stringArray(forKey: Self.historyKey) ?? []
     }
