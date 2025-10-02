@@ -8,16 +8,22 @@
 import Foundation
 import Combine
 
+enum SearchState {
+    case idle
+    case loading
+    case showingHistory([String])
+    case showingResults([PocketChef.MealDetails])
+    case error(String)
+}
+
+
+
 protocol SearchViewModelProtocol: AnyObject {
     
     // MARK: - Publishers for Data Binding
-    var searchResultsPublisher: AnyPublisher<[PocketChef.MealDetails], Never> { get }
-    var errorPublisher: AnyPublisher<String, Never> { get }
-    
-    // MARK: - Data Source
-    var numberOfResults: Int { get }
-    func result(at index: Int) -> PocketChef.MealDetails?
+    var statePublisher: AnyPublisher<SearchState, Never> { get }
     
     // MARK: - View Actions
+    func loadInitialState()
     func search(for query: String)
 }

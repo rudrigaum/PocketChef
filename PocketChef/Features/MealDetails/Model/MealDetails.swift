@@ -8,7 +8,7 @@
 import Foundation
 
 struct MealDetailsResponse: Decodable {
-    let meals: [MealDetails]
+    let meals: [MealDetails]?
 }
 
 struct MealDetails: Decodable {

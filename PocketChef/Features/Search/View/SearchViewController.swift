@@ -19,7 +19,10 @@ final class SearchViewController: UIViewController {
     private var customView: SearchView? {
         return view as? SearchView
     }
-
+    
+    private var searchHistory: [String] = []
+    private var searchResults: [PocketChef.MealDetails] = []
+    
     private var cancellables = Set<AnyCancellable>()
 
     // MARK: - Initialization
@@ -42,6 +45,8 @@ final class SearchViewController: UIViewController {
         
         setupUI()
         setupBindings()
+        
+        viewModel.loadInitialState()
     }
     
     // MARK - Private Methods
@@ -51,59 +56,92 @@ final class SearchViewController: UIViewController {
         customView?.tableView.delegate = self
         customView?.searchBar.delegate = self
         customView?.tableView.register(MealCell.self, forCellReuseIdentifier: MealCell.reuseIdentifier)
+        customView?.tableView.register(UITableViewCell.self, forCellReuseIdentifier: "HistoryCell")
     }
 
     private func setupBindings() {
-        viewModel.searchResultsPublisher
+        viewModel.statePublisher
             .receive(on: DispatchQueue.main)
-            .sink { [weak self] _ in
-                self?.customView?.tableView.reloadData()
-            }
-            .store(in: &cancellables)
-
-        viewModel.errorPublisher
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] errorMessage in
-                print("Search Error: \(errorMessage)")
+            .sink { [weak self] state in
+                self?.handle(state: state)
             }
             .store(in: &cancellables)
     }
+    
+    private func handle(state: SearchState) {
+        switch state {
+        case .idle:
+            customView?.activityIndicator.stopAnimating()
+            
+        case .loading:
+            customView?.activityIndicator.startAnimating()
+            
+        case .showingHistory(let history):
+            customView?.activityIndicator.stopAnimating()
+            self.searchHistory = history
+            self.searchResults = []
+            customView?.tableView.reloadData()
+            
+        case .showingResults(let results):
+            customView?.activityIndicator.stopAnimating()
+            self.searchHistory = []
+            self.searchResults = results
+            customView?.tableView.reloadData()
+            
+        case .error(let message):
+            customView?.activityIndicator.stopAnimating()
+            print("Search Error: \(message)")
+        }
+    }
 }
 
+// MARK: - UITableViewDataSource
 extension SearchViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return viewModel.numberOfResults
+        return !searchResults.isEmpty ? searchResults.count : searchHistory.count
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: MealCell.reuseIdentifier, for: indexPath) as? MealCell else {
-            return UITableViewCell()
-        }
-        
-        if let meal = viewModel.result(at: indexPath.row) {
+        if !searchResults.isEmpty {
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: MealCell.reuseIdentifier, for: indexPath) as? MealCell else {
+                return UITableViewCell()
+            }
+            
+            let meal = searchResults[indexPath.row]
             let imageURL = URL(string: meal.thumbnailURLString ?? "")
             cell.configure(with: meal.name, imageURL: imageURL)
+            return cell
+        } else {
+            let cell = tableView.dequeueReusableCell(withIdentifier: "HistoryCell", for: indexPath)
+            let term = searchHistory[indexPath.row]
+            var content = cell.defaultContentConfiguration()
+            content.text = term
+            cell.contentConfiguration = content
+            return cell
         }
-        
-        return cell
     }
 }
 
+// MARK: - UITableViewDelegate
 extension SearchViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         
-        guard let selectedMeal = viewModel.result(at: indexPath.row) else { return }
-        
-        delegate?.searchViewController(self, didSelectMeal: selectedMeal)
+        if !searchResults.isEmpty {
+            let selectedMeal = searchResults[indexPath.row]
+            delegate?.searchViewController(self, didSelectMeal: selectedMeal)
+        } else {
+            let selectedTerm = searchHistory[indexPath.row]
+            customView?.searchBar.text = selectedTerm
+            viewModel.search(for: selectedTerm)
+        }
     }
 }
-
 
 // MARK: - UISearchBarDelegate
 extension SearchViewController: UISearchBarDelegate {
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-            viewModel.search(for: searchText)
+        viewModel.search(for: searchText)
     }
 
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
