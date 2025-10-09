@@ -17,7 +17,7 @@ enum SearchState {
 }
 
 
-
+@MainActor
 protocol SearchViewModelProtocol: AnyObject {
     
     // MARK: - Publishers for Data Binding

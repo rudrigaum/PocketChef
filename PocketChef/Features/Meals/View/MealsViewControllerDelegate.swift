@@ -7,6 +7,7 @@
 
 import Foundation
 
+@MainActor
 protocol MealsViewControllerDelegate: AnyObject {
     func mealsViewController(_ controller: MealsViewController, didSelectMeal meal: Meal)
 }

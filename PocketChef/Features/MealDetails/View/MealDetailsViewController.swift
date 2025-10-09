@@ -18,6 +18,7 @@ final class MealDetailsViewController: UIViewController {
     }
     
     private var cancellables = Set<AnyCancellable>()
+    private var favoriteButton: UIBarButtonItem?
     
     // MARK: - Initialization
     init(viewModel: MealDetailsViewModelProtocol) {
@@ -38,6 +39,7 @@ final class MealDetailsViewController: UIViewController {
         super.viewDidLoad()
         
         setupBindings()
+        setupFavoriteButton()
         
         title = viewModel.mealName
         customView?.activityIndicator.startAnimating()
@@ -63,6 +65,13 @@ final class MealDetailsViewController: UIViewController {
                 print("Error fetching details: \(errorMessage)")
             }
             .store(in: &cancellables)
+        
+        viewModel.isFavoritePublisher
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] isFavorite in
+                self?.updateFavoriteButton(isFavorite: isFavorite)
+            }
+            .store(in: &cancellables)
     }
     
     private func updateView(with details: MealDetails) {
@@ -73,5 +82,25 @@ final class MealDetailsViewController: UIViewController {
         customView.displayIngredients(details.ingredients)
         let imageURL = URL(string: details.thumbnailURLString ?? "")
         ImageLoader.shared.loadImage(into: customView.mealImageView, from: imageURL)
+    }
+    
+    private func setupFavoriteButton() {
+        let button = UIBarButtonItem(image: UIImage(systemName: "star"),
+                                     style: .plain,
+                                     target: self,
+                                     action: #selector(favoriteButtonTapped))
+        navigationItem.rightBarButtonItem = button
+        self.favoriteButton = button
+    }
+
+    @objc private func favoriteButtonTapped() {
+        Task {
+            await viewModel.toggleFavoriteStatus()
+        }
+    }
+    
+    private func updateFavoriteButton(isFavorite: Bool) {
+        let iconName = isFavorite ? "star.fill" : "star"
+        favoriteButton?.image = UIImage(systemName: iconName)
     }
 }
