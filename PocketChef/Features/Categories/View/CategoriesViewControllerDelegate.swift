@@ -7,6 +7,7 @@
 
 import Foundation
 
+@MainActor
 protocol CategoriesViewControllerDelegate: AnyObject {
     func categoriesViewController(_ controller: CategoriesViewController, didSelectCategory category: Category)
 }

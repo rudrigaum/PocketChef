@@ -17,7 +17,8 @@ final class MainCoordinator: Coordinator {
     }
     
     func start() {
-        let viewController = CategoriesViewController()
+        let viewModel = CategoriesViewModel()
+        let viewController = CategoriesViewController(viewModel: viewModel)
         viewController.delegate = self
         navigationController.pushViewController(viewController, animated: false)
     }

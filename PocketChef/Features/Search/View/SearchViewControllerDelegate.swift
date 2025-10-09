@@ -7,6 +7,7 @@
 
 import Foundation
 
+@MainActor
 protocol SearchViewControllerDelegate: AnyObject {
     func searchViewController(_ controller: SearchViewController, didSelectMeal meal: MealDetails)
 }

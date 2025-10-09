@@ -40,7 +40,15 @@ final class AppCoordinator: Coordinator {
         let searchTabIcon = UIImage(systemName: "magnifyingglass")
         searchTab.tabBarItem = UITabBarItem(title: "Search", image: searchTabIcon, tag: 1)
         
-        tabBarController.viewControllers = [categoriesTab, searchTab]
+        let favoritesCoordinator = FavoritesCoordinator(navigationController: UINavigationController())
+        childCoordinators.append(favoritesCoordinator)
+        favoritesCoordinator.start()
+        
+        let favoritesTab = favoritesCoordinator.navigationController
+        let favoritesTabIcon = UIImage(systemName: "star.fill")
+        favoritesTab.tabBarItem = UITabBarItem(title: "Favorites", image: favoritesTabIcon, tag: 2)
+        
+        tabBarController.viewControllers = [categoriesTab, searchTab, favoritesTab]
         
         window.rootViewController = tabBarController
         window.makeKeyAndVisible()

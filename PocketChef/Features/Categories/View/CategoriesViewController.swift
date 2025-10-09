@@ -9,6 +9,7 @@ import Foundation
 import UIKit
 import Combine
 
+@MainActor
 final class CategoriesViewController: UIViewController {
     
     // MARK: - Properties
@@ -22,7 +23,7 @@ final class CategoriesViewController: UIViewController {
     private var cancellables = Set<AnyCancellable>()
     
     // MARK: - Initialization
-    init(viewModel: CategoriesViewModelProtocol = CategoriesViewModel()) {
+    init(viewModel: CategoriesViewModelProtocol) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
     }

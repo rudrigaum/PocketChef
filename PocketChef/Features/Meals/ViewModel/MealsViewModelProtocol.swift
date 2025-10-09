@@ -8,6 +8,7 @@
 import Foundation
 import Combine
 
+@MainActor
 protocol MealsViewModelProtocol: AnyObject {
     
     // MARK: - Publishers for Data Binding
