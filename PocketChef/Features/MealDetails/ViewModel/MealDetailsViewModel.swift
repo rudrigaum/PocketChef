@@ -16,7 +16,7 @@ final class MealDetailsViewModel: MealDetailsViewModelProtocol {
         detailsSubject.eraseToAnyPublisher()
     }
     
-    var errorPublisher: AnyPublisher<String, Never> {
+    var errorPublisher: AnyPublisher<Error, Never> {
         errorSubject.eraseToAnyPublisher()
     }
     
@@ -26,7 +26,7 @@ final class MealDetailsViewModel: MealDetailsViewModelProtocol {
     
     // MARK: - Private Properties
     private let detailsSubject = PassthroughSubject<MealDetails, Never>()
-    private let errorSubject = PassthroughSubject<String, Never>()
+    private let errorSubject = PassthroughSubject<Error, Never>()
     private let isFavoriteSubject = CurrentValueSubject<Bool, Never>(false)
     private let mealSummary: Meal
     private var mealDetails: MealDetails?
@@ -66,7 +66,7 @@ final class MealDetailsViewModel: MealDetailsViewModelProtocol {
                 throw NetworkError.invalidResponse
             }
         } catch {
-            errorSubject.send(error.localizedDescription)
+            errorSubject.send(error)
         }
     }
     
@@ -77,7 +77,7 @@ final class MealDetailsViewModel: MealDetailsViewModelProtocol {
             let isFavorite = await favoritesStore.isFavorite(mealId: details.id)
             isFavoriteSubject.send(isFavorite)
         } catch {
-            errorSubject.send(error.localizedDescription)
+            errorSubject.send(error)
         }
     }
     

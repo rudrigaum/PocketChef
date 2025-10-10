@@ -68,9 +68,11 @@ final class MealsViewController: UIViewController {
 
         viewModel.errorPublisher
             .receive(on: DispatchQueue.main)
-            .sink { [weak self] errorMessage in
-                self?.customView?.activityIndicator.stopAnimating()
-                print("Error fetching meals: \(errorMessage)")
+            .sink { [weak self] error in
+                guard let self = self else { return }
+                
+                self.customView?.activityIndicator.stopAnimating()
+                self.delegate?.mealsViewController(self, didFailWith: error)
             }
             .store(in: &cancellables)
     }
