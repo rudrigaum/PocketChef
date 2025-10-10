@@ -13,7 +13,7 @@ protocol MealsViewModelProtocol: AnyObject {
     
     // MARK: - Publishers for Data Binding
     var mealsPublisher: AnyPublisher<[Meal], Never> { get }
-    var errorPublisher: AnyPublisher<String, Never> { get }
+    var errorPublisher: AnyPublisher<Error, Never> { get }
     
     // MARK: - Data Source
     var screenTitle: String { get }

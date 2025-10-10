@@ -13,6 +13,7 @@ final class MealDetailsViewController: UIViewController {
     
     // MARK: - Properties
     private let viewModel: MealDetailsViewModelProtocol
+    weak var delegate: MealDetailsViewControllerDelegate?
     private var customView: MealDetailsView? {
         return view as? MealDetailsView
     }
@@ -60,9 +61,11 @@ final class MealDetailsViewController: UIViewController {
             
         viewModel.errorPublisher
             .receive(on: DispatchQueue.main)
-            .sink { [weak self] errorMessage in
-                self?.customView?.activityIndicator.stopAnimating()
-                print("Error fetching details: \(errorMessage)")
+            .sink { [weak self] error in 
+                guard let self = self else { return }
+                
+                self.customView?.activityIndicator.stopAnimating()
+                self.delegate?.mealDetailsViewController(self, didFailWith: error)
             }
             .store(in: &cancellables)
         

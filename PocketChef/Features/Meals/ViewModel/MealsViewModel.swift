@@ -15,13 +15,13 @@ final class MealsViewModel: MealsViewModelProtocol {
         mealsSubject.eraseToAnyPublisher()
     }
     
-    var errorPublisher: AnyPublisher<String, Never> {
+    var errorPublisher: AnyPublisher<Error, Never> {
         errorSubject.eraseToAnyPublisher()
     }
     
     // MARK: - Private Properties
     private let mealsSubject = PassthroughSubject<[Meal], Never>()
-    private let errorSubject = PassthroughSubject<String, Never>()
+    private let errorSubject = PassthroughSubject<Error, Never>()
     
     private var meals: [Meal] = []
     private let category: PocketChef.Category
@@ -59,7 +59,7 @@ final class MealsViewModel: MealsViewModelProtocol {
             self.meals = response.meals.sorted { $0.name < $1.name }
             mealsSubject.send(self.meals)
         } catch {
-            errorSubject.send(error.localizedDescription)
+            errorSubject.send(error)
         }
     }
 }
