@@ -41,6 +41,10 @@ extension MainCoordinator: CategoriesViewControllerDelegate {
     func categoriesViewController(_ controller: CategoriesViewController, didSelectCategory category: Category) {
         showMeals(for: category)
     }
+    
+    func categoriesViewController(_ controller: CategoriesViewController, didFailWith error: Error) {
+        presentAlert(title: "Error", message: error.localizedDescription)
+    }
 }
 
 extension MainCoordinator: MealsViewControllerDelegate {

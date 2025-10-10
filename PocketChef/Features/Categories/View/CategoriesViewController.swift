@@ -66,12 +66,15 @@ final class CategoriesViewController: UIViewController {
                 self?.customView?.tableView.reloadData()
             }
             .store(in: &cancellables)
-            
+        
         viewModel.errorPublisher
             .receive(on: DispatchQueue.main)
             .sink { [weak self] errorMessage in
-                self?.customView?.activityIndicator.stopAnimating()
-                print("Error fetching categories: \(errorMessage)")
+                guard let self = self else { return }
+                
+                self.customView?.activityIndicator.stopAnimating()
+                let error = NSError(domain: "CategoriesFetchError", code: 0, userInfo: [NSLocalizedDescriptionKey: errorMessage])
+                self.delegate?.categoriesViewController(self, didFailWith: error)
             }
             .store(in: &cancellables)
     }
