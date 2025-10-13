@@ -24,4 +24,8 @@ final class MockSearchHistoryStore: SearchHistoryStore {
     func clearSearchHistory() {
         mockHistory.removeAll()
     }
+    
+    func remove(searchTerm term: String) {
+        mockHistory.removeAll { $0 == term }
+    }
 }
