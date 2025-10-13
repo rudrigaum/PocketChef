@@ -1,0 +1,30 @@
+
+name: PocketChef CI
+
+on:
+
+  push:
+    branches: [ main ]
+
+  pull_request:
+    branches: [ main ]
+
+
+jobs:
+  build-and-test:
+
+    runs-on: macos-latest
+
+
+    steps:
+    
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+
+      - name: Build and Test
+        run: |
+          xcodebuild -project PocketChef.xcodeproj \
+                     -scheme PocketChef \
+                     -destination 'platform=iOS Simulator,name=iPhone 15 Pro' \
+                     test
