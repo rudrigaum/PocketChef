@@ -24,9 +24,7 @@ jobs:
 
       - name: Build and Test
         run: |
-          SIMULATOR_ID=$(xcrun simctl list devices available | grep -m 1 'iPhone' | grep -E -o '[0-9a-fA-F]{8}-([0-9a-fA-F]{4}-){3}[0-9a-fA-F]{12}')
-
           xcodebuild -project PocketChef.xcodeproj \
                      -scheme PocketChef \
-                     -destination "id=$SIMULATOR_ID" \
+                     -destination 'platform=iOS Simulator,name=iPhone 16 Pro' \
                      test
