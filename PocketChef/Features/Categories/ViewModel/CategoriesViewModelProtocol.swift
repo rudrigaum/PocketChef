@@ -14,7 +14,7 @@ protocol CategoriesViewModelProtocol: AnyObject {
     // MARK: - Publishers for Data Binding
 
     var categoriesPublisher: AnyPublisher<[PocketChef.Category], Never> { get }
-    var errorPublisher: AnyPublisher<String, Never> { get }
+    var errorPublisher: AnyPublisher<Error, Never> { get }
     
     // MARK: - Data Source (agora derivado dos Publishers)
     

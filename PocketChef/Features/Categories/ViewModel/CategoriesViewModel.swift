@@ -12,7 +12,7 @@ final class CategoriesViewModel: CategoriesViewModelProtocol {
     
     // MARK: - Private Properties
     private let categoriesSubject = PassthroughSubject<[PocketChef.Category], Never>()
-    private let errorSubject = PassthroughSubject<String, Never>()
+    private let errorSubject = PassthroughSubject<Error, Never>()
     
     private var categories: [PocketChef.Category] = []
     private let networkService: NetworkServiceProtocol
@@ -23,7 +23,7 @@ final class CategoriesViewModel: CategoriesViewModelProtocol {
         categoriesSubject.eraseToAnyPublisher()
     }
     
-    var errorPublisher: AnyPublisher<String, Never> {
+    var errorPublisher: AnyPublisher<Error, Never> {
         errorSubject.eraseToAnyPublisher()
     }
     
@@ -53,7 +53,7 @@ final class CategoriesViewModel: CategoriesViewModelProtocol {
             categoriesSubject.send(self.categories)
             
         } catch {
-            errorSubject.send(error.localizedDescription)
+            errorSubject.send(error)
         }
     }
 }

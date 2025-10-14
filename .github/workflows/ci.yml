@@ -14,6 +14,8 @@ jobs:
   build-and-test:
 
     runs-on: macos-latest
+    
+    timeout-minutes: 30
 
 
     steps:
@@ -22,9 +24,16 @@ jobs:
         uses: actions/checkout@v4
 
 
-      - name: Build and Test
+      - name: Build for Testing
         run: |
           xcodebuild -project PocketChef.xcodeproj \
                      -scheme PocketChef \
-                     -destination 'platform=iOS Simulator,name=iPhone 15 Pro' \
-                     test
+                     -destination 'platform=iOS Simulator,name=iPhone 16 Pro' \
+                     build-for-testing
+
+      - name: Run Unit Tests
+        run: |
+          xcodebuild -project PocketChef.xcodeproj \
+                     -scheme PocketChef \
+                     -destination 'platform=iOS Simulator,name=iPhone 16 Pro' \
+                     test-without-building

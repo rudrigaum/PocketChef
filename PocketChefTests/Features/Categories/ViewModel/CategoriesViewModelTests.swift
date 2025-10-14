@@ -10,6 +10,7 @@ import XCTest
 import Combine
 @testable import PocketChef
 
+@MainActor
 final class CategoriesViewModelTests: XCTestCase {
 
     // MARK: - Properties
@@ -57,24 +58,24 @@ final class CategoriesViewModelTests: XCTestCase {
     }
     
     func testFetchCategories_WhenRequestFails_ShouldPublishError() async {
+
         let mockError = NetworkError.invalidResponse
         mockNetworkService.mockResult = .failure(mockError)
         
-        let expectation = self.expectation(description: "Publishes an error message")
-        var receivedError: String?
+        let expectation = self.expectation(description: "Publishes an error object")
+        var receivedError: Error?
 
         sut.errorPublisher
-            .sink { errorMessage in
-                receivedError = errorMessage
+            .sink { error in
+                receivedError = error
                 expectation.fulfill()
             }
             .store(in: &cancellables)
 
         await sut.fetchCategories()
-    
         await fulfillment(of: [expectation], timeout: 1.0)
 
-        XCTAssertNotNil(receivedError, "Should receive an error message.")
-        XCTAssertEqual(receivedError, mockError.localizedDescription, "The error message should match.")
+        XCTAssertNotNil(receivedError, "Should receive an error object.")
+        XCTAssertEqual(receivedError?.localizedDescription, mockError.localizedDescription, "The error message should match.")
     }
 }

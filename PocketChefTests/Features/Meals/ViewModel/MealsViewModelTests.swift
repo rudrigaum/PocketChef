@@ -10,6 +10,7 @@ import XCTest
 import Combine
 @testable import PocketChef
 
+@MainActor
 final class MealsViewModelTests: XCTestCase {
 
     // MARK: - Properties
@@ -59,17 +60,17 @@ final class MealsViewModelTests: XCTestCase {
         XCTAssertEqual(sut.meal(at: 0)?.name, "Beef and Mustard Pie", "The meal name should be correct.")
         XCTAssertEqual(sut.screenTitle, "Beef Meals", "The screen title should be correctly formatted based on the mock category.")
     }
-    
+
     func testFetchMeals_WhenRequestFails_ShouldPublishError() async {
         let mockError = NetworkError.serverError(statusCode: 500)
         mockNetworkService.mockResult = .failure(mockError)
         
-        let expectation = self.expectation(description: "Publishes an error message")
-        var receivedError: String?
+        let expectation = self.expectation(description: "Publishes an error object")
+        var receivedError: Error?
 
         sut.errorPublisher
-            .sink { errorMessage in
-                receivedError = errorMessage
+            .sink { error in
+                receivedError = error
                 expectation.fulfill()
             }
             .store(in: &cancellables)
@@ -77,7 +78,7 @@ final class MealsViewModelTests: XCTestCase {
         await sut.fetchMeals()
         await fulfillment(of: [expectation], timeout: 1.0)
 
-        XCTAssertNotNil(receivedError, "Should receive an error message.")
+        XCTAssertNotNil(receivedError, "Should receive an error object.")
         XCTAssertEqual(sut.numberOfMeals, 0, "Number of meals should be 0 after a failed fetch.")
     }
 }
