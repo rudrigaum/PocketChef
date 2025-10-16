@@ -56,6 +56,7 @@ final class HistoryCell: UITableViewCell {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         setupView()
         setupActions()
+        setupAccessibility()
     }
     
     required init?(coder: NSCoder) {
@@ -65,6 +66,8 @@ final class HistoryCell: UITableViewCell {
     // MARK: - Public Methods
     func configure(with term: String) {
         termLabel.text = term
+        accessibilityLabel = term
+        accessibilityHint = "Double-tap to search again. Swipe up for actions."
     }
     
     // MARK: - Private Methods
@@ -90,6 +93,8 @@ final class HistoryCell: UITableViewCell {
             clockIconImageView.widthAnchor.constraint(equalToConstant: iconWidth),
             deleteButton.widthAnchor.constraint(equalToConstant: iconWidth)
         ])
+        deleteButton.isAccessibilityElement = false
+        isAccessibilityElement = true
     }
     
     private func setupActions() {
@@ -98,5 +103,16 @@ final class HistoryCell: UITableViewCell {
     
     @objc private func deleteButtonWasTapped() {
         onDeleteButtonTapped?()
+    }
+    
+    private func setupAccessibility() {
+        let deleteAction = UIAccessibilityCustomAction(
+            name: "Delete",
+            target: self,
+            selector: #selector(deleteButtonWasTapped)
+        )
+        
+        // Atribui esta ação à célula.
+        accessibilityCustomActions = [deleteAction]
     }
 }
