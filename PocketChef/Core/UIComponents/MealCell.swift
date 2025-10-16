@@ -44,6 +44,8 @@ final class MealCell: UITableViewCell {
     func configure(with mealName: String, imageURL: URL?) {
         mealNameLabel.text = mealName
         ImageLoader.shared.loadImage(into: mealImageView, from: imageURL)
+        accessibilityLabel = mealName
+        accessibilityHint = "Double-tap to see recipe details."
     }
     
     private func setupView() {
@@ -63,5 +65,7 @@ final class MealCell: UITableViewCell {
             mealNameLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
             mealNameLabel.centerYAnchor.constraint(equalTo: contentView.centerYAnchor)
         ])
+        isAccessibilityElement = true
+        accessibilityTraits = .button
     }
 }
