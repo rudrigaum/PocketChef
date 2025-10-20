@@ -10,6 +10,7 @@ import UIKit
 
 @MainActor
 final class VideosCoordinator: Coordinator {
+    
     var navigationController: UINavigationController
     
     init(navigationController: UINavigationController) {
@@ -17,21 +18,16 @@ final class VideosCoordinator: Coordinator {
     }
     
     func start() {
-        let viewController = UIViewController()
-        viewController.title = "Recipe Videos"
-        viewController.view.backgroundColor = .systemBackground
-        
-        let label = UILabel()
-        label.text = "Recipe Videos - Coming Soon!"
-        label.textAlignment = .center
-        label.textColor = .secondaryLabel
-        viewController.view.addSubview(label)
-        label.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            label.centerXAnchor.constraint(equalTo: viewController.view.centerXAnchor),
-            label.centerYAnchor.constraint(equalTo: viewController.view.centerYAnchor)
-        ])
-        
+        let viewModel = VideosViewModel()
+        let viewController = VideosViewController(viewModel: viewModel)
+        viewController.delegate = self
         navigationController.pushViewController(viewController, animated: false)
+    }
+}
+
+// MARK: - VideosViewControllerDelegate
+extension VideosCoordinator: VideosViewControllerDelegate {
+    func videosViewController(_ controller: VideosViewController, didSelectVideo videoItem: VideoItem) {
+        print("Coordinator was told to play video with ID: \(videoItem.id.videoId)")
     }
 }
