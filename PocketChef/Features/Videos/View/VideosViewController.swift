@@ -56,7 +56,7 @@ final class VideosViewController: UIViewController {
         title = "Recipe Videos"
         customView?.tableView.dataSource = self
         customView?.tableView.delegate = self
-        customView?.tableView.register(UITableViewCell.self, forCellReuseIdentifier: "VideoCell")
+        customView?.tableView.register(VideoCell.self, forCellReuseIdentifier: VideoCell.reuseIdentifier)
     }
 
     private func setupBindings() {
@@ -98,12 +98,14 @@ extension VideosViewController: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "VideoCell", for: indexPath)
-        let video = videos[indexPath.row]
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: VideoCell.reuseIdentifier, for: indexPath) as? VideoCell else {
+            return UITableViewCell()
+        }
         
-        var content = cell.defaultContentConfiguration()
-        content.text = video.snippet.title
-        cell.contentConfiguration = content
+        let video = videos[indexPath.row]
+        let thumbnailURL = URL(string: video.snippet.thumbnails.high.url)
+        
+        cell.configure(with: video.snippet.title, thumbnailURL: thumbnailURL)
         
         return cell
     }
