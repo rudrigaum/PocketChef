@@ -15,6 +15,7 @@ final class SearchView: UIView {
         searchBar.translatesAutoresizingMaskIntoConstraints = false
         searchBar.placeholder = "Search for a meal..."
         searchBar.searchBarStyle = .minimal
+        searchBar.accessibilityIdentifier = "search_screen_search_bar"
         return searchBar
     }()
     
@@ -22,6 +23,7 @@ final class SearchView: UIView {
         let tableView = UITableView()
         tableView.translatesAutoresizingMaskIntoConstraints = false
         tableView.rowHeight = 80
+        tableView.accessibilityIdentifier = "search_results_table"
         return tableView
     }()
     
