@@ -18,11 +18,19 @@
 			remoteGlobalIDString = 18291AA92E79C4D800E463E1;
 			remoteInfo = PocketChef;
 		};
+		18E2E2FD2EA6C00000A4E006 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 18291AA22E79C4D800E463E1 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 18291AA92E79C4D800E463E1;
+			remoteInfo = PocketChef;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		18291AAA2E79C4D800E463E1 /* PocketChef.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PocketChef.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		188B19A72E8C5E770068768A /* PocketChefTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PocketChefTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		18E2E2F72EA6C00000A4E006 /* PocketChefUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PocketChefUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -49,6 +57,11 @@
 			path = PocketChefTests;
 			sourceTree = "<group>";
 		};
+		18E2E2F82EA6C00000A4E006 /* PocketChefUITests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = PocketChefUITests;
+			sourceTree = "<group>";
+		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -67,6 +80,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		18E2E2F42EA6C00000A4E006 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -75,6 +95,7 @@
 			children = (
 				18291AAC2E79C4D800E463E1 /* PocketChef */,
 				188B19A82E8C5E780068768A /* PocketChefTests */,
+				18E2E2F82EA6C00000A4E006 /* PocketChefUITests */,
 				18EC074C2E8DA56A00C2C09F /* Frameworks */,
 				18291AAB2E79C4D800E463E1 /* Products */,
 			);
@@ -85,6 +106,7 @@
 			children = (
 				18291AAA2E79C4D800E463E1 /* PocketChef.app */,
 				188B19A72E8C5E770068768A /* PocketChefTests.xctest */,
+				18E2E2F72EA6C00000A4E006 /* PocketChefUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -145,6 +167,29 @@
 			productReference = 188B19A72E8C5E770068768A /* PocketChefTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
+		18E2E2F62EA6C00000A4E006 /* PocketChefUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 18E2E3012EA6C00000A4E006 /* Build configuration list for PBXNativeTarget "PocketChefUITests" */;
+			buildPhases = (
+				18E2E2F32EA6C00000A4E006 /* Sources */,
+				18E2E2F42EA6C00000A4E006 /* Frameworks */,
+				18E2E2F52EA6C00000A4E006 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				18E2E2FE2EA6C00000A4E006 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				18E2E2F82EA6C00000A4E006 /* PocketChefUITests */,
+			);
+			name = PocketChefUITests;
+			packageProductDependencies = (
+			);
+			productName = PocketChefUITests;
+			productReference = 18E2E2F72EA6C00000A4E006 /* PocketChefUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -159,6 +204,11 @@
 						CreatedOnToolsVersion = 16.4;
 					};
 					188B19A62E8C5E770068768A = {
+						CreatedOnToolsVersion = 26.0.1;
+						LastSwiftMigration = 2600;
+						TestTargetID = 18291AA92E79C4D800E463E1;
+					};
+					18E2E2F62EA6C00000A4E006 = {
 						CreatedOnToolsVersion = 26.0.1;
 						LastSwiftMigration = 2600;
 						TestTargetID = 18291AA92E79C4D800E463E1;
@@ -184,6 +234,7 @@
 			targets = (
 				18291AA92E79C4D800E463E1 /* PocketChef */,
 				188B19A62E8C5E770068768A /* PocketChefTests */,
+				18E2E2F62EA6C00000A4E006 /* PocketChefUITests */,
 			);
 		};
 /* End PBXProject section */
@@ -197,6 +248,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		188B19A52E8C5E770068768A /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		18E2E2F52EA6C00000A4E006 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -220,6 +278,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		18E2E2F32EA6C00000A4E006 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -227,6 +292,11 @@
 			isa = PBXTargetDependency;
 			target = 18291AA92E79C4D800E463E1 /* PocketChef */;
 			targetProxy = 188B19AB2E8C5E780068768A /* PBXContainerItemProxy */;
+		};
+		18E2E2FE2EA6C00000A4E006 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 18291AA92E79C4D800E463E1 /* PocketChef */;
+			targetProxy = 18E2E2FD2EA6C00000A4E006 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -455,6 +525,51 @@
 			};
 			name = Release;
 		};
+		18E2E2FF2EA6C00000A4E006 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 8MF89G73K4;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.rudrigo.PocketChefUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = PocketChef;
+			};
+			name = Debug;
+		};
+		18E2E3002EA6C00000A4E006 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 8MF89G73K4;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.rudrigo.PocketChefUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = PocketChef;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -481,6 +596,15 @@
 			buildConfigurations = (
 				188B19AD2E8C5E780068768A /* Debug */,
 				188B19AE2E8C5E780068768A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		18E2E3012EA6C00000A4E006 /* Build configuration list for PBXNativeTarget "PocketChefUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				18E2E2FF2EA6C00000A4E006 /* Debug */,
+				18E2E3002EA6C00000A4E006 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

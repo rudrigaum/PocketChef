@@ -26,28 +26,32 @@ final class AppCoordinator: Coordinator {
             with: MainCoordinator(navigationController: UINavigationController()),
             title: "Categories",
             iconName: "fork.knife",
-            tag: 0
+            tag: 0,
+            accessibilityID: "categories_tab"
         )
         
         let searchTab = setupTab(
             with: SearchCoordinator(navigationController: UINavigationController()),
             title: "Search",
             iconName: "magnifyingglass",
-            tag: 1
+            tag: 1,
+            accessibilityID: "search_tab"
         )
         
         let favoritesTab = setupTab(
             with: FavoritesCoordinator(navigationController: UINavigationController()),
             title: "Favorites",
             iconName: "star.fill",
-            tag: 2
+            tag: 2,
+            accessibilityID: "favorites_tab"
         )
         
         let videosTab = setupTab(
             with: VideosCoordinator(navigationController: UINavigationController()),
             title: "Videos",
             iconName: "play.tv",
-            tag: 3
+            tag: 3,
+            accessibilityID: "videos_tab"
         )
         
         tabBarController.viewControllers = [categoriesTab, searchTab, favoritesTab, videosTab]
@@ -56,13 +60,14 @@ final class AppCoordinator: Coordinator {
         window.makeKeyAndVisible()
     }
     
-    private func setupTab(with coordinator: Coordinator, title: String, iconName: String, tag: Int) -> UINavigationController {
+    private func setupTab(with coordinator: Coordinator, title: String, iconName: String, tag: Int, accessibilityID: String) -> UINavigationController {
         childCoordinators.append(coordinator)
         coordinator.start()
         
         let navigationController = coordinator.navigationController
         let tabIcon = UIImage(systemName: iconName)
         navigationController.tabBarItem = UITabBarItem(title: title, image: tabIcon, tag: tag)
+        navigationController.tabBarItem.accessibilityIdentifier = accessibilityID // << ADICIONE ESTA LINHA
         
         return navigationController
     }
