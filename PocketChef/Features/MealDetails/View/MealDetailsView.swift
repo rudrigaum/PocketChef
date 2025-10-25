@@ -26,7 +26,7 @@ final class MealDetailsView: UIView {
         let stackView = UIStackView()
         stackView.translatesAutoresizingMaskIntoConstraints = false
         stackView.axis = .vertical
-        stackView.spacing = 24
+        stackView.spacing = Theme.Spacing.large
         return stackView
     }()
     
@@ -35,14 +35,15 @@ final class MealDetailsView: UIView {
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.contentMode = .scaleAspectFill
         imageView.clipsToBounds = true
-        imageView.backgroundColor = .systemGray5
+        imageView.backgroundColor = Theme.Colors.separator
         imageView.heightAnchor.constraint(equalToConstant: 250).isActive = true
         return imageView
     }()
     
     private let ingredientsHeaderLabel: UILabel = {
         let label = UILabel()
-        label.font = .systemFont(ofSize: 22, weight: .bold)
+        label.font = Theme.Fonts.headline
+        label.textColor = Theme.Colors.primaryText
         label.text = "Ingredients"
         return label
     }()
@@ -50,20 +51,22 @@ final class MealDetailsView: UIView {
     private let ingredientsStackView: UIStackView = {
         let stackView = UIStackView()
         stackView.axis = .vertical
-        stackView.spacing = 8
+        stackView.spacing = Theme.Spacing.small
         return stackView
     }()
     
     private let instructionsHeaderLabel: UILabel = {
         let label = UILabel()
-        label.font = .systemFont(ofSize: 22, weight: .bold)
+        label.font = Theme.Fonts.headline
+        label.textColor = Theme.Colors.primaryText
         label.text = "Instructions"
         return label
     }()
     
     let instructionsLabel: UILabel = {
         let label = UILabel()
-        label.font = .systemFont(ofSize: 16, weight: .regular)
+        label.font = Theme.Fonts.body
+        label.textColor = Theme.Colors.primaryText
         label.numberOfLines = 0
         return label
     }()
@@ -75,6 +78,7 @@ final class MealDetailsView: UIView {
         return indicator
     }()
     
+    // MARK: - Initialization
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupView()
@@ -84,20 +88,24 @@ final class MealDetailsView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
+    // MARK: - Public Methods
     func displayIngredients(_ ingredients: [MealDetails.Ingredient]) {
         ingredientsStackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
         
         for ingredient in ingredients {
             let label = UILabel()
-            label.font = .systemFont(ofSize: 16)
+            label.font = Theme.Fonts.body
+            label.textColor = Theme.Colors.primaryText
             label.numberOfLines = 0
             label.text = "• \(ingredient.measure) \(ingredient.name)"
             ingredientsStackView.addArrangedSubview(label)
         }
     }
     
+    // MARK: - Private Methods
     private func setupView() {
         backgroundColor = .systemBackground
+        
         addSubview(scrollView)
         addSubview(activityIndicator)
         scrollView.addSubview(contentView)
@@ -109,10 +117,12 @@ final class MealDetailsView: UIView {
         mainStackView.addArrangedSubview(instructionsHeaderLabel)
         mainStackView.addArrangedSubview(instructionsLabel)
         
+        let standardSpacing = Theme.Spacing.standard
+        
         NSLayoutConstraint.activate([
             scrollView.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor),
-            scrollView.leadingAnchor.constraint(equalTo: leadingAnchor),
-            scrollView.trailingAnchor.constraint(equalTo: trailingAnchor),
+            scrollView.leadingAnchor.constraint(equalTo: self.leadingAnchor),
+            scrollView.trailingAnchor.constraint(equalTo: self.trailingAnchor),
             scrollView.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor),
             
             contentView.topAnchor.constraint(equalTo: scrollView.contentLayoutGuide.topAnchor),
@@ -122,12 +132,12 @@ final class MealDetailsView: UIView {
             contentView.widthAnchor.constraint(equalTo: scrollView.frameLayoutGuide.widthAnchor),
             
             mainStackView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 0),
-            mainStackView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
-            mainStackView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
-            mainStackView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -16),
-            
-            activityIndicator.centerXAnchor.constraint(equalTo: centerXAnchor),
-            activityIndicator.centerYAnchor.constraint(equalTo: centerYAnchor)
+            mainStackView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: standardSpacing),
+            mainStackView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -standardSpacing),
+            mainStackView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -standardSpacing),
+        
+            activityIndicator.centerXAnchor.constraint(equalTo: self.centerXAnchor),
+            activityIndicator.centerYAnchor.constraint(equalTo: self.centerYAnchor)
         ])
     }
 }

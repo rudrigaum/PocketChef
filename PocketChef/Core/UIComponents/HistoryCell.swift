@@ -21,15 +21,15 @@ final class HistoryCell: UITableViewCell {
         let imageView = UIImageView()
         let config = UIImage.SymbolConfiguration(textStyle: .body)
         imageView.image = UIImage(systemName: "clock", withConfiguration: config)
-        imageView.tintColor = .secondaryLabel
+        imageView.tintColor = Theme.Colors.secondaryText
         imageView.contentMode = .center
         return imageView
     }()
     
     private let termLabel: UILabel = {
         let label = UILabel()
-        label.font = .systemFont(ofSize: 17, weight: .regular)
-        label.textColor = .label
+        label.font = Theme.Fonts.body
+        label.textColor = Theme.Colors.primaryText
         return label
     }()
     
@@ -46,7 +46,7 @@ final class HistoryCell: UITableViewCell {
         let stackView = UIStackView()
         stackView.translatesAutoresizingMaskIntoConstraints = false
         stackView.axis = .horizontal
-        stackView.spacing = 12
+        stackView.spacing = Theme.Spacing.medium
         stackView.alignment = .center
         return stackView
     }()
@@ -84,17 +84,18 @@ final class HistoryCell: UITableViewCell {
         
         let iconWidth: CGFloat = 24
         
+        let standardSpacing = Theme.Spacing.standard
+        let mediumSpacing = Theme.Spacing.medium
+        
         NSLayoutConstraint.activate([
-            mainStackView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 12),
-            mainStackView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
-            mainStackView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
-            mainStackView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -12),
+            mainStackView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: mediumSpacing),
+            mainStackView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: standardSpacing),
+            mainStackView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -standardSpacing),
+            mainStackView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -mediumSpacing),
             
             clockIconImageView.widthAnchor.constraint(equalToConstant: iconWidth),
             deleteButton.widthAnchor.constraint(equalToConstant: iconWidth)
         ])
-        deleteButton.isAccessibilityElement = false
-        isAccessibilityElement = true
     }
     
     private func setupActions() {
@@ -112,7 +113,6 @@ final class HistoryCell: UITableViewCell {
             selector: #selector(deleteButtonWasTapped)
         )
         
-        // Atribui esta ação à célula.
         accessibilityCustomActions = [deleteAction]
     }
 }
