@@ -54,7 +54,15 @@ final class AppCoordinator: Coordinator {
             accessibilityID: "videos_tab"
         )
         
-        tabBarController.viewControllers = [categoriesTab, searchTab, favoritesTab, videosTab]
+        let randomMealTab = setupTab(
+            with: RandomMealCoordinator(navigationController: UINavigationController()),
+            title: "Surprise Me!",
+            iconName: "dice",
+            tag: 3,
+            accessibilityID: "random_meal_tab"
+        )
+        
+        tabBarController.viewControllers = [categoriesTab, searchTab, favoritesTab, videosTab, randomMealTab]
         
         window.rootViewController = tabBarController
         window.makeKeyAndVisible()
@@ -67,7 +75,7 @@ final class AppCoordinator: Coordinator {
         let navigationController = coordinator.navigationController
         let tabIcon = UIImage(systemName: iconName)
         navigationController.tabBarItem = UITabBarItem(title: title, image: tabIcon, tag: tag)
-        navigationController.tabBarItem.accessibilityIdentifier = accessibilityID // << ADICIONE ESTA LINHA
+        navigationController.tabBarItem.accessibilityIdentifier = accessibilityID 
         
         return navigationController
     }
