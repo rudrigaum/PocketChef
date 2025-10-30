@@ -81,7 +81,7 @@ final class RandomMealViewController: UIViewController {
             customView?.activityIndicator.stopAnimating()
             
             self.loadedMeal = mealDetails
-            title = mealDetails.name
+            navigationItem.title = mealDetails.name
             
             let imageURL = URL(string: mealDetails.thumbnailURLString ?? "")
             ImageLoader.shared.loadImage(into: customView!.mealImageView, from: imageURL)
