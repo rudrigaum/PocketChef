@@ -55,7 +55,7 @@ final class CategoriesViewController: UIViewController {
     private func setupTableView() {
         customView?.tableView.dataSource = self
         customView?.tableView.delegate = self
-        customView?.tableView.register(MealCell.self, forCellReuseIdentifier: "CategoryCell")
+        customView?.tableView.register(MealCell.self, forCellReuseIdentifier: MealCell.reuseIdentifier)
     }
     
     private func setupBindings() {
@@ -86,12 +86,13 @@ extension CategoriesViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "CategoryCell", for: indexPath)
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: MealCell.reuseIdentifier, for: indexPath) as? MealCell else {
+            return UITableViewCell()
+        }
         
         if let category = viewModel.category(at: indexPath.row) {
-            var content = cell.defaultContentConfiguration()
-            content.text = category.name
-            cell.contentConfiguration = content
+            let imageURL = URL(string: category.thumbnailURL)
+            cell.configure(with: category.name, imageURL: imageURL)
         }
         
         return cell
