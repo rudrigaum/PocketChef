@@ -13,6 +13,7 @@ final class CategoriesView: UIView {
     let tableView: UITableView = {
         let tableView = UITableView()
         tableView.translatesAutoresizingMaskIntoConstraints = false
+        tableView.rowHeight = 80
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "CategoryCell")
         return tableView
     }()
