@@ -22,7 +22,8 @@ final class SearchViewController: UIViewController {
     
     private let emptyStateView = EmptyStateView()
     private var searchHistory: [String] = []
-    private var searchResults: [PocketChef.MealDetails] = []
+    private var searchResults: [MealDetails] = []
+    private var isLoading: Bool = false
     
     private var cancellables = Set<AnyCancellable>()
 
@@ -56,6 +57,7 @@ final class SearchViewController: UIViewController {
         customView?.searchBar.delegate = self
         customView?.tableView.register(MealCell.self, forCellReuseIdentifier: MealCell.reuseIdentifier)
         customView?.tableView.register(HistoryCell.self, forCellReuseIdentifier: HistoryCell.reuseIdentifier)
+        customView?.tableView.register(SkeletonCell.self, forCellReuseIdentifier: SkeletonCell.reuseIdentifier)
         customView?.tableView.backgroundView = emptyStateView
     }
 
@@ -70,55 +72,83 @@ final class SearchViewController: UIViewController {
     
 
     private func handle(state: SearchState) {
-        if case .loading = state {
-            customView?.activityIndicator.startAnimating()
-        } else {
-            customView?.activityIndicator.stopAnimating()
-        }
-
         switch state {
         case .idle:
-            emptyStateView.isHidden = true
-            
+            renderIdleState()
         case .loading:
+            renderLoadingState()
+        case .showingHistory(let history):
+            renderHistoryState(history: history)
+        case .showingResults(let results):
+            renderResultsState(results: results)
+        case .error(let message):
+            renderErrorState(message: message)
+        }
+        customView?.tableView.reloadData()
+    }
+    
+    // MARK: - State Rendering Helper Methods
+    private func renderIdleState() {
+            self.isLoading = false
             emptyStateView.isHidden = true
+        }
+        
+        private func renderLoadingState() {
+            emptyStateView.isHidden = true
+            self.isLoading = true
             searchResults = []
             searchHistory = []
-            
-        case .showingHistory(let history):
+        }
+        
+        private func renderHistoryState(history: [String]) {
+            self.isLoading = false
             searchHistory = history
             searchResults = []
+            
             emptyStateView.configure(with: "Your recent searches will appear here.", iconName: "clock")
             emptyStateView.isHidden = !history.isEmpty
-            
-        case .showingResults(let results):
+        }
+        
+        private func renderResultsState(results: [MealDetails]) {
+            self.isLoading = false
             searchHistory = []
             searchResults = results
+            
             if results.isEmpty {
                 let searchTerm = customView?.searchBar.text ?? ""
                 let message = "No results found for \"\(searchTerm)\".\nPlease try another search."
                 emptyStateView.configure(with: message, iconName: "magnifyingglass")
             }
             emptyStateView.isHidden = !results.isEmpty
-            
-        case .error(let message):
+        }
+        
+        private func renderErrorState(message: String) {
+            self.isLoading = false
             searchHistory = []
             searchResults = []
+            
             emptyStateView.configure(with: message, iconName: "exclamationmark.triangle")
             emptyStateView.isHidden = false
         }
-        customView?.tableView.reloadData()
-    }
 }
 
 // MARK: - UITableViewDataSource
 extension SearchViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        if isLoading {
+            return 6
+        }
         return !searchResults.isEmpty ? searchResults.count : searchHistory.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        if !searchResults.isEmpty {
+        if isLoading {
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: SkeletonCell.reuseIdentifier, for: indexPath) as? SkeletonCell else {
+                return UITableViewCell()
+            }
+            return cell
+
+        } else if !searchResults.isEmpty {
             guard let cell = tableView.dequeueReusableCell(withIdentifier: MealCell.reuseIdentifier, for: indexPath) as? MealCell else {
                 return UITableViewCell()
             }
@@ -131,14 +161,11 @@ extension SearchViewController: UITableViewDataSource {
             guard let cell = tableView.dequeueReusableCell(withIdentifier: HistoryCell.reuseIdentifier, for: indexPath) as? HistoryCell else {
                 return UITableViewCell()
             }
-
             let term = searchHistory[indexPath.row]
             cell.configure(with: term)
-
             cell.onDeleteButtonTapped = { [weak self] in
                 self?.viewModel.deleteHistory(term: term)
             }
-
             return cell
         }
     }
@@ -149,6 +176,8 @@ extension SearchViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         
+        guard !isLoading else { return }
+
         if !searchResults.isEmpty {
             let selectedMeal = searchResults[indexPath.row]
             delegate?.searchViewController(self, didSelectMeal: selectedMeal)
