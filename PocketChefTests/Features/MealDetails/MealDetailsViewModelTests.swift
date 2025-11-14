@@ -14,14 +14,12 @@ import Combine
 final class MealDetailsViewModelTests: XCTestCase {
 
     // MARK: - Properties
-    
     private var sut: MealDetailsViewModel!
     private var mockNetworkService: MockNetworkService!
     private var mockMealSummary: Meal!
     private var cancellables: Set<AnyCancellable>!
 
     // MARK: - Lifecycle
-    
     override func setUp() {
         super.setUp()
         mockMealSummary = Meal(id: "52772", name: "Teriyaki Chicken Casserole", thumbnailURLString: "")
@@ -41,12 +39,12 @@ final class MealDetailsViewModelTests: XCTestCase {
     // MARK: - Test Cases
     
     func testFetchDetails_WhenRequestSucceeds_ShouldPublishDetails() async {
-        let mockDetails = PocketChef.MealDetails(id: "52772", name: "Teriyaki Chicken Casserole", instructions: "...", thumbnailURLString: nil, ingredients: [])
+        let mockDetails = MealDetails(id: "52772", name: "Teriyaki Chicken Casserole", instructions: "...", thumbnailURLString: nil, ingredients: [])
         let mockResponse = MealDetailsResponse(meals: [mockDetails])
         mockNetworkService.mockResult = .success(mockResponse)
         
         let expectation = self.expectation(description: "Publishes meal details")
-        var receivedDetails: PocketChef.MealDetails?
+        var receivedDetails: MealDetails?
         
         sut.detailsPublisher
             .sink { details in
@@ -54,9 +52,8 @@ final class MealDetailsViewModelTests: XCTestCase {
                 expectation.fulfill()
             }
             .store(in: &cancellables)
-        
+
         await sut.fetchDetails()
-        
         await fulfillment(of: [expectation], timeout: 1.0)
         
         XCTAssertNotNil(receivedDetails)
@@ -64,6 +61,7 @@ final class MealDetailsViewModelTests: XCTestCase {
     }
     
     func testFetchDetails_WhenRequestFails_ShouldPublishError() async {
+
         let mockError = NetworkError.invalidURL
         mockNetworkService.mockResult = .failure(mockError)
         
@@ -81,6 +79,6 @@ final class MealDetailsViewModelTests: XCTestCase {
         await fulfillment(of: [expectation], timeout: 1.0)
 
         XCTAssertNotNil(receivedError, "Should receive an error object.")
-        XCTAssertEqual(receivedError?.localizedDescription, mockError.localizedDescription, "The error message should match.")
+        XCTAssertEqual(receivedError?.localizedDescription, mockError.localizedDescription)
     }
 }
