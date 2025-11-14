@@ -8,18 +8,15 @@
 import Foundation
 import Combine
 
+enum MealsState {
+    case loading
+    case loaded([Meal])
+    case error(Error)
+}
+
 @MainActor
 protocol MealsViewModelProtocol: AnyObject {
-    
-    // MARK: - Publishers for Data Binding
-    var mealsPublisher: AnyPublisher<[Meal], Never> { get }
-    var errorPublisher: AnyPublisher<Error, Never> { get }
-    
-    // MARK: - Data Source
+    var statePublisher: AnyPublisher<MealsState, Never> { get }
     var screenTitle: String { get }
-    var numberOfMeals: Int { get }
-    func meal(at index: Int) -> Meal?
-    
-    // MARK: - View Actions
     func fetchMeals() async
 }

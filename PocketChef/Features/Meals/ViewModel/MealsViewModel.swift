@@ -8,58 +8,44 @@
 import Foundation
 import Combine
 
+@MainActor
 final class MealsViewModel: MealsViewModelProtocol {
     
-    // MARK: - Publishers (Data Binding)
-    var mealsPublisher: AnyPublisher<[Meal], Never> {
-        mealsSubject.eraseToAnyPublisher()
+    // MARK: - Publishers
+    var statePublisher: AnyPublisher<MealsState, Never> {
+        stateSubject.eraseToAnyPublisher()
     }
     
-    var errorPublisher: AnyPublisher<Error, Never> {
-        errorSubject.eraseToAnyPublisher()
-    }
-    
-    // MARK: - Private Properties
-    private let mealsSubject = PassthroughSubject<[Meal], Never>()
-    private let errorSubject = PassthroughSubject<Error, Never>()
-    
-    private var meals: [Meal] = []
-    private let category: PocketChef.Category
-    private let networkService: NetworkServiceProtocol
-    private let baseURL = "https://www.themealdb.com/api/json/v1/1/filter.php?c="
-    
-    // MARK: - Initialization
-    init(category: PocketChef.Category, networkService: NetworkServiceProtocol = NetworkService()) {
-        self.category = category
-        self.networkService = networkService
-    }
-    
-    // MARK: - Data Source
+    // MARK: - Public Properties
     var screenTitle: String {
         return "\(category.name) Meals"
     }
     
-    var numberOfMeals: Int {
-        return meals.count
-    }
-    
-    func meal(at index: Int) -> Meal? {
-        guard index >= 0 && index < meals.count else {
-            return nil
-        }
-        return meals[index]
+    // MARK: - Private Properties
+    private let stateSubject = CurrentValueSubject<MealsState, Never>(.loading)
+    private let category: Category
+    private let networkService: NetworkServiceProtocol
+    private let baseURL = "https://www.themealdb.com/api/json/v1/1/filter.php?c="
+
+    // MARK: - Initialization
+    init(category: Category, networkService: NetworkServiceProtocol = NetworkService()) {
+        self.category = category
+        self.networkService = networkService
     }
     
     // MARK: - View Actions
     func fetchMeals() async {
+        stateSubject.send(.loading)
+        
         let urlString = baseURL + category.name
         
         do {
             let response: MealsResponse = try await networkService.request(urlString: urlString)
-            self.meals = response.meals.sorted { $0.name < $1.name }
-            mealsSubject.send(self.meals)
+            let meals = response.meals.sorted { $0.name < $1.name }
+            stateSubject.send(.loaded(meals))
+            
         } catch {
-            errorSubject.send(error)
+            stateSubject.send(.error(error))
         }
     }
 }

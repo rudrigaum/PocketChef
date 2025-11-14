@@ -8,20 +8,17 @@
 import Foundation
 import Combine
 
+enum CategoriesState {
+    case loading
+    case loaded([Category])
+    case error(Error)
+}
+
 @MainActor
 protocol CategoriesViewModelProtocol: AnyObject {
-    
     // MARK: - Publishers for Data Binding
-
-    var categoriesPublisher: AnyPublisher<[PocketChef.Category], Never> { get }
-    var errorPublisher: AnyPublisher<Error, Never> { get }
-    
-    // MARK: - Data Source (agora derivado dos Publishers)
-    
-    var numberOfCategories: Int { get }
-    func category(at index: Int) -> PocketChef.Category?
+    var statePublisher: AnyPublisher<CategoriesState, Never> { get }
     
     // MARK: - View Actions
-    
     func fetchCategories() async
 }
