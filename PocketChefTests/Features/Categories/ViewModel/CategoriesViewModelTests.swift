@@ -13,12 +13,10 @@ import Combine
 @MainActor
 final class CategoriesViewModelTests: XCTestCase {
 
-    // MARK: - Properties
     private var sut: CategoriesViewModel!
     private var mockNetworkService: MockNetworkService!
     private var cancellables: Set<AnyCancellable>!
 
-    // MARK: - Lifecycle
     override func setUp() {
         super.setUp()
         mockNetworkService = MockNetworkService()
@@ -33,41 +31,46 @@ final class CategoriesViewModelTests: XCTestCase {
         super.tearDown()
     }
 
-    // MARK: - Test Cases
-    func testFetchCategories_WhenRequestSucceeds_ShouldPublishCategories() async {
-        let mockCategory = PocketChef.Category(id: "1", name: "Dessert", thumbnailURL: "", description: "")
+    func testFetchCategories_WhenRequestSucceeds_ShouldPublishLoadedState() async {
+        let mockCategory = Category(id: "1", name: "Dessert", thumbnailURL: "", description: "")
         let mockResponse = CategoriesResponse(categories: [mockCategory])
         mockNetworkService.mockResult = .success(mockResponse)
         
-        let expectation = self.expectation(description: "Publishes an array of categories")
-        var receivedCategories: [PocketChef.Category] = []
+        let expectation = self.expectation(description: "Publishes a .loaded state")
+        var receivedState: CategoriesState?
         
-        sut.categoriesPublisher
-            .sink { categories in
-                receivedCategories = categories
+        sut.statePublisher
+            .first(where: { $0.isNotLoading })
+            .sink { state in
+                receivedState = state
                 expectation.fulfill()
             }
             .store(in: &cancellables)
-        
+
         await sut.fetchCategories()
         
         await fulfillment(of: [expectation], timeout: 1.0)
         
-        XCTAssertEqual(receivedCategories.count, 1, "Should receive one category.")
-        XCTAssertEqual(receivedCategories.first?.name, "Dessert", "The category name should be correct.")
+        guard case .loaded(let categories) = receivedState else {
+            XCTFail("Expected .loaded state, but got \(String(describing: receivedState))")
+            return
+        }
+        
+        XCTAssertEqual(categories.count, 1)
+        XCTAssertEqual(categories.first?.name, "Dessert")
     }
     
-    func testFetchCategories_WhenRequestFails_ShouldPublishError() async {
-
+    func testFetchCategories_WhenRequestFails_ShouldPublishErrorState() async {
         let mockError = NetworkError.invalidResponse
         mockNetworkService.mockResult = .failure(mockError)
         
-        let expectation = self.expectation(description: "Publishes an error object")
-        var receivedError: Error?
-
-        sut.errorPublisher
-            .sink { error in
-                receivedError = error
+        let expectation = self.expectation(description: "Publishes an .error state")
+        var receivedState: CategoriesState?
+        
+        sut.statePublisher
+            .first(where: { $0.isNotLoading })
+            .sink { state in
+                receivedState = state
                 expectation.fulfill()
             }
             .store(in: &cancellables)
@@ -75,7 +78,11 @@ final class CategoriesViewModelTests: XCTestCase {
         await sut.fetchCategories()
         await fulfillment(of: [expectation], timeout: 1.0)
 
-        XCTAssertNotNil(receivedError, "Should receive an error object.")
-        XCTAssertEqual(receivedError?.localizedDescription, mockError.localizedDescription, "The error message should match.")
+        guard case .error(let error) = receivedState else {
+            XCTFail("Expected .error state, but got \(String(describing: receivedState))")
+            return
+        }
+        
+        XCTAssertEqual(error.localizedDescription, mockError.localizedDescription)
     }
 }

@@ -11,17 +11,19 @@ import Combine
 
 @MainActor
 final class CategoriesViewController: UIViewController {
-    
+
     // MARK: - Properties
     private let viewModel: CategoriesViewModelProtocol
     weak var delegate: CategoriesViewControllerDelegate?
-    
+
     private var customView: CategoriesView? {
         return view as? CategoriesView
     }
     
+    private var categories: [Category] = []
+    private var isLoading: Bool = true
     private var cancellables = Set<AnyCancellable>()
-    
+
     // MARK: - Initialization
     init(viewModel: CategoriesViewModelProtocol) {
         self.viewModel = viewModel
@@ -39,74 +41,88 @@ final class CategoriesViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        title = "Categories"
-        
-        setupTableView()
+        setupUI()
         setupBindings()
-        
-        customView?.activityIndicator.startAnimating()
-        
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
         Task {
             await viewModel.fetchCategories()
         }
     }
     
     // MARK: - Private Methods
-    private func setupTableView() {
+    private func setupUI() {
+        title = "Categories"
         customView?.tableView.dataSource = self
         customView?.tableView.delegate = self
         customView?.tableView.register(MealCell.self, forCellReuseIdentifier: MealCell.reuseIdentifier)
+        customView?.tableView.register(SkeletonCell.self, forCellReuseIdentifier: SkeletonCell.reuseIdentifier)
+    }
+
+    private func setupBindings() {
+        viewModel.statePublisher
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] state in
+                self?.handle(state: state)
+            }
+            .store(in: &cancellables)
     }
     
-    private func setupBindings() {
-        viewModel.categoriesPublisher
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] _ in
-                self?.customView?.activityIndicator.stopAnimating()
-                self?.customView?.tableView.reloadData()
-            }
-            .store(in: &cancellables)
-        
-        viewModel.errorPublisher
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] errorMessage in
-                guard let self = self else { return }
-                
-                self.customView?.activityIndicator.stopAnimating()
-                let error = NSError(domain: "CategoriesFetchError", code: 0, userInfo: [NSLocalizedDescriptionKey: errorMessage])
-                self.delegate?.categoriesViewController(self, didFailWith: error)
-            }
-            .store(in: &cancellables)
+    private func handle(state: CategoriesState) {
+        switch state {
+        case .loading:
+            self.isLoading = true
+            customView?.tableView.reloadData()
+            
+        case .loaded(let categories):
+            self.isLoading = false
+            self.categories = categories
+            customView?.tableView.reloadData()
+            
+        case .error(let error):
+            self.isLoading = false
+            self.categories = []
+            customView?.tableView.reloadData()
+            delegate?.categoriesViewController(self, didFailWith: error)
+        }
     }
 }
 
+// MARK: - UITableViewDataSource
 extension CategoriesViewController: UITableViewDataSource {
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return viewModel.numberOfCategories
-    }
     
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return isLoading ? 6 : categories.count
+    }
+
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: MealCell.reuseIdentifier, for: indexPath) as? MealCell else {
-            return UITableViewCell()
-        }
-        
-        if let category = viewModel.category(at: indexPath.row) {
+        if isLoading {
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: SkeletonCell.reuseIdentifier, for: indexPath) as? SkeletonCell else {
+                return UITableViewCell()
+            }
+            return cell
+        } else {
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: MealCell.reuseIdentifier, for: indexPath) as? MealCell else {
+                return UITableViewCell()
+            }
+            
+            let category = categories[indexPath.row]
             let imageURL = URL(string: category.thumbnailURL)
             cell.configure(with: category.name, imageURL: imageURL)
+            return cell
         }
-        
-        return cell
     }
 }
 
+// MARK: - UITableViewDelegate
 extension CategoriesViewController: UITableViewDelegate {
+    
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-    
-        guard let selectedCategory = viewModel.category(at: indexPath.row) else {
-            return
-        }
-        
+        guard !isLoading else { return }
+        let selectedCategory = categories[indexPath.row]
         delegate?.categoriesViewController(self, didSelectCategory: selectedCategory)
     }
 }

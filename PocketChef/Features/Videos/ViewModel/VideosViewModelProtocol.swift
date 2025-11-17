@@ -8,10 +8,15 @@
 import Foundation
 import Combine
 
-enum VideosState {
+enum VideosState: LoadingStateful {
     case loading
     case loaded([VideoItem])
     case error(String)
+    
+    var isLoading: Bool {
+        if case .loading = self { return true }
+        return false
+    }
 }
 
 @MainActor

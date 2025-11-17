@@ -8,11 +8,16 @@
 import Foundation
 import Combine
 
-enum RandomMealState {
+enum RandomMealState: LoadingStateful {
     case idle
     case loading
     case loaded(MealDetails)
     case error(Error)
+    
+    var isLoading: Bool {
+        if case .loading = self { return true }
+        return false
+    }
 }
 
 @MainActor
