@@ -2,27 +2,27 @@
 name: PocketChef CI
 
 on:
-
   push:
     branches: [ main ]
-
   pull_request:
     branches: [ main ]
 
-
 jobs:
   build-and-test:
-
     runs-on: macos-latest
-    
     timeout-minutes: 30
 
-
     steps:
-    
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Cache Swift Package Manager dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/Library/Developer/Xcode/DerivedData
+          key: ${{ runner.os }}-spm-${{ hashFiles('Package.resolved') }}
+          restore-keys: |
+            ${{ runner.os }}-spm-
 
       - name: Build for Testing
         run: |
