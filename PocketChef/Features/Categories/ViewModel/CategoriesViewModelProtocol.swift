@@ -8,10 +8,15 @@
 import Foundation
 import Combine
 
-enum CategoriesState {
+enum CategoriesState: LoadingStateful {
     case loading
     case loaded([Category])
     case error(Error)
+    
+    var isLoading: Bool {
+        if case .loading = self { return true }
+        return false
+    }
 }
 
 @MainActor

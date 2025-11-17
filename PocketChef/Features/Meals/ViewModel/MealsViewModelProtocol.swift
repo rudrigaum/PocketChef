@@ -8,10 +8,15 @@
 import Foundation
 import Combine
 
-enum MealsState {
+enum MealsState: LoadingStateful {
     case loading
     case loaded([Meal])
     case error(Error)
+    
+    var isLoading: Bool {
+        if case .loading = self { return true }
+        return false
+    }
 }
 
 @MainActor

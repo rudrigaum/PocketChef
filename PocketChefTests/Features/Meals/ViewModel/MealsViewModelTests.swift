@@ -6,8 +6,6 @@
 //
 
 import Foundation
-// Em: PocketChefTests/Features/Meals/ViewModel/MealsViewModelTests.swift
-
 import XCTest
 import Combine
 @testable import PocketChef
@@ -48,7 +46,7 @@ final class MealsViewModelTests: XCTestCase {
         var receivedState: MealsState?
         
         sut.statePublisher
-            .dropFirst()
+            .first(where: { $0.isNotLoading })
             .sink { state in
                 receivedState = state
                 expectation.fulfill()
@@ -73,9 +71,9 @@ final class MealsViewModelTests: XCTestCase {
         
         let expectation = self.expectation(description: "Publishes an .error state")
         var receivedState: MealsState?
-    
+        
         sut.statePublisher
-            .dropFirst()
+            .first(where: { $0.isNotLoading })
             .sink { state in
                 receivedState = state
                 expectation.fulfill()

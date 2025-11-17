@@ -13,12 +13,10 @@ import Combine
 @MainActor
 final class CategoriesViewModelTests: XCTestCase {
 
-    // MARK: - Properties
     private var sut: CategoriesViewModel!
     private var mockNetworkService: MockNetworkService!
     private var cancellables: Set<AnyCancellable>!
 
-    // MARK: - Lifecycle
     override func setUp() {
         super.setUp()
         mockNetworkService = MockNetworkService()
@@ -33,7 +31,6 @@ final class CategoriesViewModelTests: XCTestCase {
         super.tearDown()
     }
 
-    // MARK: - Test Cases
     func testFetchCategories_WhenRequestSucceeds_ShouldPublishLoadedState() async {
         let mockCategory = Category(id: "1", name: "Dessert", thumbnailURL: "", description: "")
         let mockResponse = CategoriesResponse(categories: [mockCategory])
@@ -43,7 +40,7 @@ final class CategoriesViewModelTests: XCTestCase {
         var receivedState: CategoriesState?
         
         sut.statePublisher
-            .dropFirst()
+            .first(where: { $0.isNotLoading })
             .sink { state in
                 receivedState = state
                 expectation.fulfill()
@@ -71,7 +68,7 @@ final class CategoriesViewModelTests: XCTestCase {
         var receivedState: CategoriesState?
         
         sut.statePublisher
-            .dropFirst()
+            .first(where: { $0.isNotLoading })
             .sink { state in
                 receivedState = state
                 expectation.fulfill()
