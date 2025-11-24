@@ -59,6 +59,15 @@ final class CategoriesViewController: UIViewController {
         customView?.tableView.delegate = self
         customView?.tableView.register(MealCell.self, forCellReuseIdentifier: MealCell.reuseIdentifier)
         customView?.tableView.register(SkeletonCell.self, forCellReuseIdentifier: SkeletonCell.reuseIdentifier)
+        
+        let surpriseButton = UIBarButtonItem(
+            image: UIImage(systemName: "dice"),
+            style: .plain,
+            target: self,
+            action: #selector(surpriseButtonTapped)
+        )
+        surpriseButton.accessibilityLabel = "Surprise Me"
+        navigationItem.rightBarButtonItem = surpriseButton
     }
 
     private func setupBindings() {
@@ -68,6 +77,10 @@ final class CategoriesViewController: UIViewController {
                 self?.handle(state: state)
             }
             .store(in: &cancellables)
+    }
+    
+    @objc private func surpriseButtonTapped() {
+        delegate?.categoriesViewControllerDidTapSurpriseMe(self)
     }
     
     private func handle(state: CategoriesState) {

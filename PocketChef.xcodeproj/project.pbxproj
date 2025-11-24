@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		18C27C992ED1047B003F1D1C /* GoogleGenerativeAI in Frameworks */ = {isa = PBXBuildFile; productRef = 18C27C982ED1047B003F1D1C /* GoogleGenerativeAI */; };
 		18EC074E2E8DA57300C2C09F /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = 18EC074D2E8DA57300C2C09F /* Kingfisher */; };
 /* End PBXBuildFile section */
 
@@ -70,6 +71,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				18EC074E2E8DA57300C2C09F /* Kingfisher in Frameworks */,
+				18C27C992ED1047B003F1D1C /* GoogleGenerativeAI in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -139,6 +141,7 @@
 			name = PocketChef;
 			packageProductDependencies = (
 				18EC074D2E8DA57300C2C09F /* Kingfisher */,
+				18C27C982ED1047B003F1D1C /* GoogleGenerativeAI */,
 			);
 			productName = PocketChef;
 			productReference = 18291AAA2E79C4D800E463E1 /* PocketChef.app */;
@@ -226,6 +229,7 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				18EC07422E8D9B6400C2C09F /* XCRemoteSwiftPackageReference "Kingfisher" */,
+				189557852ECCED6E000B2748 /* XCRemoteSwiftPackageReference "generative-ai-swift" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 18291AAB2E79C4D800E463E1 /* Products */;
@@ -612,6 +616,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		189557852ECCED6E000B2748 /* XCRemoteSwiftPackageReference "generative-ai-swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/google/generative-ai-swift";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.5.6;
+			};
+		};
 		18EC07422E8D9B6400C2C09F /* XCRemoteSwiftPackageReference "Kingfisher" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/onevcat/Kingfisher.git";
@@ -623,6 +635,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		18C27C982ED1047B003F1D1C /* GoogleGenerativeAI */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 189557852ECCED6E000B2748 /* XCRemoteSwiftPackageReference "generative-ai-swift" */;
+			productName = GoogleGenerativeAI;
+		};
 		18EC074D2E8DA57300C2C09F /* Kingfisher */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 18EC07422E8D9B6400C2C09F /* XCRemoteSwiftPackageReference "Kingfisher" */;

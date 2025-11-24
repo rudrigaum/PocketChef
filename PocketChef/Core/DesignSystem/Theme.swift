@@ -12,7 +12,7 @@ enum Theme {
     
     // MARK: - Colors
     enum Colors {
-        static let accent = UIColor(named: "accentColor")
+        static let accent = UIColor(named: "AccentColor")
         static let background = UIColor.systemBackground
         static let primaryText = UIColor.label
         static let secondaryText = UIColor.secondaryLabel
