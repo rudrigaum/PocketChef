@@ -7,23 +7,35 @@
 
 import Foundation
 
-enum APIKeyManager {
+public enum APIKeyManager {
     
-    static var youTubeAPIKey: String {
-        guard let filePath = Bundle.main.path(forResource: "APIKeys", ofType: "plist") else {
-            fatalError("Couldn't find file 'APIKeys.plist'. Make sure it's added to the project.")
+    private enum KeyName: String {
+        case gemini = "GEMINI_API_KEY"
+        case youtube = "YOUTUBE_API_KEY"
+    }
+    
+    private static let plistDict: NSDictionary = {
+        guard let filePath = Bundle.main.path(forResource: "APIKeys", ofType: "plist"),
+              let dict = NSDictionary(contentsOfFile: filePath) else {
+            fatalError("🚨 ERROR: APIKeys.plist not found or cannot be loaded.")
         }
-        
-        guard let plist = NSDictionary(contentsOfFile: filePath) else {
-            fatalError("Couldn't load 'APIKeys.plist'. Check its format.")
+        return dict
+    }()
+
+    private static func getRequiredKey(forKey key: KeyName) -> String {
+        let keyName = key.rawValue
+        guard let value = plistDict.object(forKey: keyName) as? String, !value.isEmpty else {
+            fatalError("🚨 ERROR: Missing or empty API key for '\(keyName)' in APIKeys.plist.")
         }
-        
-        guard let key = plist.object(forKey: "YouTubeAPIKey") as? String else {
-            fatalError("Couldn't find key 'YouTubeAPIKey' in 'APIKeys.plist'.")
-        }
-        
-        return key
+        return value
+    }
+    
+    // MARK: - Public API Keys
+    public static var geminiAPIKey: String {
+        return getRequiredKey(forKey: .gemini)
+    }
+
+    public static var youTubeAPIKey: String {
+        return getRequiredKey(forKey: .youtube)
     }
 }
-
-

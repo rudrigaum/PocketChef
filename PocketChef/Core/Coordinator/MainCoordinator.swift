@@ -45,6 +45,14 @@ extension MainCoordinator: CategoriesViewControllerDelegate {
     func categoriesViewController(_ controller: CategoriesViewController, didFailWith error: Error) {
         presentAlert(title: "Error", message: error.localizedDescription)
     }
+    
+    func categoriesViewControllerDidTapSurpriseMe(_ controller: CategoriesViewController) {
+        let randomMealCoordinator = RandomMealCoordinator(navigationController: self.navigationController)
+        let randomNav = UINavigationController()
+        let modalCoordinator = RandomMealCoordinator(navigationController: randomNav)
+        modalCoordinator.start()
+        navigationController.present(randomNav, animated: true)
+    }
 }
 
 extension MainCoordinator: MealsViewControllerDelegate {

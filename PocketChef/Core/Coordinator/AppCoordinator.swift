@@ -54,15 +54,15 @@ final class AppCoordinator: Coordinator {
             accessibilityID: "videos_tab"
         )
         
-        let randomMealTab = setupTab(
-            with: RandomMealCoordinator(navigationController: UINavigationController()),
-            title: "Surprise Me!",
-            iconName: "dice",
-            tag: 3,
-            accessibilityID: "random_meal_tab"
+        let chefAITab = setupTab(
+            with: ChefAICoordinator(),
+            title: "Chef AI",
+            iconName: "brain.head.profile",
+            tag: 4,
+            accessibilityID: "chef_ai_tab"
         )
         
-        tabBarController.viewControllers = [categoriesTab, searchTab, favoritesTab, videosTab, randomMealTab]
+        tabBarController.viewControllers = [categoriesTab, searchTab, favoritesTab, videosTab, chefAITab]
         
         window.rootViewController = tabBarController
         window.makeKeyAndVisible()
