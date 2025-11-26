@@ -24,7 +24,7 @@ final class AppCoordinator: Coordinator {
         
         let categoriesTab = setupTab(
             with: MainCoordinator(navigationController: UINavigationController()),
-            title: "Categories",
+            title: String(localized: "Categories"),
             iconName: "fork.knife",
             tag: 0,
             accessibilityID: "categories_tab"
@@ -32,7 +32,7 @@ final class AppCoordinator: Coordinator {
         
         let searchTab = setupTab(
             with: SearchCoordinator(navigationController: UINavigationController()),
-            title: "Search",
+            title: String(localized: "Search"),
             iconName: "magnifyingglass",
             tag: 1,
             accessibilityID: "search_tab"
@@ -40,7 +40,7 @@ final class AppCoordinator: Coordinator {
         
         let favoritesTab = setupTab(
             with: FavoritesCoordinator(navigationController: UINavigationController()),
-            title: "Favorites",
+            title: String(localized: "Favorites"),
             iconName: "star.fill",
             tag: 2,
             accessibilityID: "favorites_tab"
@@ -48,7 +48,7 @@ final class AppCoordinator: Coordinator {
         
         let videosTab = setupTab(
             with: VideosCoordinator(navigationController: UINavigationController()),
-            title: "Videos",
+            title: String(localized: "Videos"),
             iconName: "play.tv",
             tag: 3,
             accessibilityID: "videos_tab"
@@ -56,7 +56,7 @@ final class AppCoordinator: Coordinator {
         
         let chefAITab = setupTab(
             with: ChefAICoordinator(),
-            title: "Chef AI",
+            title: String(localized: "Chef AI"),
             iconName: "brain.head.profile",
             tag: 4,
             accessibilityID: "chef_ai_tab"
