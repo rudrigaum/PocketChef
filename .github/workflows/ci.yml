@@ -24,6 +24,22 @@ jobs:
           key: ${{ runner.os }}-spm-v2-${{ hashFiles('**/Package.resolved') }}
           restore-keys: |
             ${{ runner.os }}-spm-v2-
+            
+      - name: Create Dummy APIKeys.plist
+        run: |
+          # Cria o arquivo plist com valores falsos para evitar o fatalError no lançamento
+          cat <<EOF > PocketChef/Application/APIKeys.plist
+          <?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0">
+          <dict>
+              <key>GEMINI_API_KEY</key>
+              <string>DUMMY_VALUE_FOR_CI</string>
+              <key>YOUTUBE_API_KEY</key>
+              <string>DUMMY_VALUE_FOR_CI</string>
+          </dict>
+          </plist>
+          EOF
 
       - name: Build for Testing
         run: |
