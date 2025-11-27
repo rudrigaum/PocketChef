@@ -32,7 +32,7 @@ jobs:
                      -destination 'platform=iOS Simulator,name=iPhone 16 Pro' \
                      build-for-testing
                      
-        - name: Run Unit Tests
+      - name: Run Unit Tests
         run: |
           xcodebuild -project PocketChef.xcodeproj \
                      -scheme PocketChef \
