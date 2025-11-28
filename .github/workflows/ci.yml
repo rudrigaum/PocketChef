@@ -1,3 +1,4 @@
+# File: .github/workflows/ci.yml
 
 name: PocketChef CI
 
@@ -10,7 +11,7 @@ on:
 jobs:
   build-and-test:
     runs-on: macos-latest
-    timeout-minutes: 60
+    timeout-minutes: 120
 
     steps:
       - name: Checkout repository
@@ -20,9 +21,25 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ~/Library/Developer/Xcode/DerivedData
-          key: ${{ runner.os }}-spm-${{ hashFiles('Package.resolved') }}
+          key: ${{ runner.os }}-spm-v2-${{ hashFiles('**/Package.resolved') }}
           restore-keys: |
-            ${{ runner.os }}-spm-
+            ${{ runner.os }}-spm-v2-
+            
+      - name: Create Dummy APIKeys.plist
+        run: |
+          # Cria o arquivo plist com valores falsos para evitar o fatalError no lançamento
+          cat <<EOF > PocketChef/Application/APIKeys.plist
+          <?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0">
+          <dict>
+              <key>GEMINI_API_KEY</key>
+              <string>DUMMY_VALUE_FOR_CI</string>
+              <key>YOUTUBE_API_KEY</key>
+              <string>DUMMY_VALUE_FOR_CI</string>
+          </dict>
+          </plist>
+          EOF
 
       - name: Build for Testing
         run: |
@@ -30,7 +47,7 @@ jobs:
                      -scheme PocketChef \
                      -destination 'platform=iOS Simulator,name=iPhone 16 Pro' \
                      build-for-testing
-
+                     
       - name: Run Unit Tests
         run: |
           xcodebuild -project PocketChef.xcodeproj \
