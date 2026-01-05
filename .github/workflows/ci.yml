@@ -49,7 +49,7 @@ jobs:
           set -o pipefail && xcodebuild test \
             -project PocketChef.xcodeproj \
             -scheme PocketChef \
-            -destination 'platform=iOS Simulator,name=iPhone 16' \
+            -destination 'platform=iOS Simulator,name=iPhone 16 Pro' \
             -enableCodeCoverage YES \
             CODE_SIGN_IDENTITY="" \
             CODE_SIGNING_REQUIRED=NO \
