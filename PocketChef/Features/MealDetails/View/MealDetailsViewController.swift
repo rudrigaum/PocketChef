@@ -92,6 +92,7 @@ final class MealDetailsViewController: UIViewController {
                                      style: .plain,
                                      target: self,
                                      action: #selector(favoriteButtonTapped))
+        button.accessibilityIdentifier = "favorite_button"
         navigationItem.rightBarButtonItem = button
         self.favoriteButton = button
     }
@@ -105,5 +106,6 @@ final class MealDetailsViewController: UIViewController {
     private func updateFavoriteButton(isFavorite: Bool) {
         let iconName = isFavorite ? "star.fill" : "star"
         favoriteButton?.image = UIImage(systemName: iconName)
+        favoriteButton?.accessibilityLabel = isFavorite ? "Remove from favorites" : "Add to favorites"
     }
 }

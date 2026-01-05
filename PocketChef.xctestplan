@@ -1,0 +1,37 @@
+{
+  "configurations" : [
+    {
+      "id" : "E102E70C-B102-4A04-845B-43BC1525CB1C",
+      "name" : "Test Scheme Action",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "performanceAntipatternCheckerEnabled" : true,
+    "targetForVariableExpansion" : {
+      "containerPath" : "container:PocketChef.xcodeproj",
+      "identifier" : "18291AA92E79C4D800E463E1",
+      "name" : "PocketChef"
+    }
+  },
+  "testTargets" : [
+    {
+      "parallelizable" : false,
+      "target" : {
+        "containerPath" : "container:PocketChef.xcodeproj",
+        "identifier" : "188B19A62E8C5E770068768A",
+        "name" : "PocketChefTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:PocketChef.xcodeproj",
+        "identifier" : "18E2E2F62EA6C00000A4E006",
+        "name" : "PocketChefUITests"
+      }
+    }
+  ],
+  "version" : 1
+}

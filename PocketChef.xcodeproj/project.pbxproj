@@ -32,6 +32,7 @@
 		18291AAA2E79C4D800E463E1 /* PocketChef.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PocketChef.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		188B19A72E8C5E770068768A /* PocketChefTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PocketChefTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		18E2E2F72EA6C00000A4E006 /* PocketChefUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PocketChefUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		18FCEB4A2F0C545C008645F8 /* PocketChef.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = PocketChef.xctestplan; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -95,6 +96,7 @@
 		18291AA12E79C4D800E463E1 = {
 			isa = PBXGroup;
 			children = (
+				18FCEB4A2F0C545C008645F8 /* PocketChef.xctestplan */,
 				18291AAC2E79C4D800E463E1 /* PocketChef */,
 				188B19A82E8C5E780068768A /* PocketChefTests */,
 				18E2E2F82EA6C00000A4E006 /* PocketChefUITests */,
@@ -540,7 +542,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 8MF89G73K4;
 				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.6;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.rudrigo.PocketChefUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -563,7 +565,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 8MF89G73K4;
 				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.6;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.rudrigo.PocketChefUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
