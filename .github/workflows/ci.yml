@@ -42,7 +42,7 @@ jobs:
       - name: Select Xcode 16
         run: sudo xcode-select -s /Applications/Xcode_16.2.app/Contents/Developer || sudo xcode-select -s /Applications/Xcode_16.1.app/Contents/Developer
 
-     - name: Debug & Run Tests
+      - name: Debug & Run Tests
         run: |
           echo "🔍 Verificando configurações do projeto..."
           # Mostra a versão minima configurada (IPHONEOS_DEPLOYMENT_TARGET)
