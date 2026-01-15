@@ -42,21 +42,18 @@ jobs:
       - name: Select Xcode 16
         run: sudo xcode-select -s /Applications/Xcode_16.2.app/Contents/Developer || sudo xcode-select -s /Applications/Xcode_16.1.app/Contents/Developer
 
-      - name: Debug & Run Tests
+      - name: Run Tests (Force iOS 17.0)
         run: |
-          echo "🔍 Verificando configurações do projeto..."
-          # Mostra a versão minima configurada (IPHONEOS_DEPLOYMENT_TARGET)
-          xcodebuild -project PocketChef.xcodeproj -showBuildSettings | grep "IPHONEOS_DEPLOYMENT_TARGET" | head -1
+          echo "🔨 Forçando IPHONEOS_DEPLOYMENT_TARGET=17.0 na marra..."
           
-          echo "📋 Listando TODOS os destinos visíveis (Raw):"
-          xcodebuild -showdestinations -scheme PocketChef
+          # Passamos a variável IPHONEOS_DEPLOYMENT_TARGET=17.0 direto no comando.
+          # Isso obriga o Xcode a aceitar rodar em simuladores mais 'antigos' (que existem na CI).
           
-          echo "🚀 Tentando rodar testes no iPhone 15 (Hardcoded)..."
-          # Vamos tentar forçar o iPhone 15, que sabemos que existe no Xcode 16.
           set -o pipefail && xcodebuild test \
             -project PocketChef.xcodeproj \
             -scheme PocketChef \
             -destination "platform=iOS Simulator,name=iPhone 15" \
+            IPHONEOS_DEPLOYMENT_TARGET=17.0 \
             -enableCodeCoverage YES \
             CODE_SIGN_IDENTITY="" \
             CODE_SIGNING_REQUIRED=NO \
