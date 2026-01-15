@@ -42,12 +42,14 @@ jobs:
       - name: Select Xcode 16
         run: sudo xcode-select -s /Applications/Xcode_16.2.app/Contents/Developer || sudo xcode-select -s /Applications/Xcode_16.1.app/Contents/Developer
 
-      - name: Run Tests (Surgery Fix)
+      - name: Run Tests (Nuclear Fix)
         run: |
-          sed -i '' 's/IPHONEOS_DEPLOYMENT_TARGET = 18.[0-9]/IPHONEOS_DEPLOYMENT_TARGET = 17.0/g' PocketChef.xcodeproj/project.pbxproj
+          sed -i '' 's/IPHONEOS_DEPLOYMENT_TARGET = .*;/IPHONEOS_DEPLOYMENT_TARGET = 17.0;/g' PocketChef.xcodeproj/project.pbxproj
           
-          grep "IPHONEOS_DEPLOYMENT_TARGET" PocketChef.xcodeproj/project.pbxproj | head -1
+          grep "IPHONEOS_DEPLOYMENT_TARGET" PocketChef.xcodeproj/project.pbxproj | head -5
           
+          xcodebuild -showdestinations -scheme PocketChef -quiet
+        
           set -o pipefail && xcodebuild test \
             -project PocketChef.xcodeproj \
             -scheme PocketChef \
