@@ -44,17 +44,16 @@ jobs:
 
       - name: Create Simulator and Run Tests
         run: |
-        
           xcrun simctl list runtimes
-        
-          RUNTIME_ID=$(xcrun simctl list runtimes | grep -o "com.apple.CoreSimulator.SimRuntime.iOS-[0-9-]*" | sort -r | head -n 1)
-        
+          
+          RUNTIME_ID=$(xcrun simctl list runtimes | grep -o "com.apple.CoreSimulator.SimRuntime.iOS-[0-9.-]*" | sort -r | head -n 1)
+          
           SIMULATOR_ID=$(xcrun simctl create "CIPHONE" "iPhone 15" "$RUNTIME_ID")
           
-          xcrun simctl boot $SIMULATOR_ID || true 
+          xcrun simctl boot $SIMULATOR_ID || true
           
           sed -i '' 's/IPHONEOS_DEPLOYMENT_TARGET = .*;/IPHONEOS_DEPLOYMENT_TARGET = 17.0;/g' PocketChef.xcodeproj/project.pbxproj
-
+          
           set -o pipefail && xcodebuild test \
             -project PocketChef.xcodeproj \
             -scheme PocketChef \
