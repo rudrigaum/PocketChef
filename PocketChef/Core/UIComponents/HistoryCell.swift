@@ -72,7 +72,7 @@ final class HistoryCell: UITableViewCell {
     
     // MARK: - Private Methods
     private func setupView() {
-        var backgroundConfig = UIBackgroundConfiguration.listCell()
+        var backgroundConfig = UIBackgroundConfiguration.listPlainCell()
         backgroundConfig.backgroundColor = .clear
         self.backgroundConfiguration = backgroundConfig
         
